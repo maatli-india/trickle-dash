@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Jost:wght@400;500;600&family=Raleway:wght@500;600;700&display=swap");
+@import "tailwindcss";
+
+/*
+ * Trickle Dash theme — mirrors the mobile app's functional-screen palette
+ * (Home, Account, Reports, PickupTraveler in trickle/src/screens) rather
+ * than the coral/black marketing-splash palette (trickle/src/constants/colors.js):
+ * a dashboard is a data console, not a hero screen, and the functional
+ * screens are what the app actually looks like for lists/cards/forms.
+ * Typography follows trickle/src/constants/fonts.js: Playfair Display for
+ * headings, Jost for body/UI text, Raleway for labels and nav metadata.
+ */
+:root {
+  --color-background: #f5f7fa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #eef1f6;
+  --color-border: #e4e8f0;
+
+  --color-ink: #1b2230;
+  --color-muted: #8991a3;
+  --color-faint: #b0b7c6;
+
+  --color-accent: #f5a623;
+  --color-accent-ink: #181405;
+  --color-accent-surface: #fff6e8;
+  --color-accent-border: #fbe2b4;
+
+  --color-success: #0f6e56;
+  --color-success-surface: #e1f5ee;
+  --color-success-border: #b7e4d4;
+
+  --color-danger: #e2574c;
+  --color-danger-surface: #faece7;
+  --color-danger-border: #f3d3cc;
+
+  --color-warning: #b37113;
+  --color-warning-surface: #fff6e8;
+
+  --color-info: #0c447c;
+  --color-info-surface: #e6f1fb;
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Jost", "Inter", system-ui, sans-serif;
+  --font-label: "Raleway", system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-border: var(--color-border);
+  --color-ink: var(--color-ink);
+  --color-muted: var(--color-muted);
+  --color-faint: var(--color-faint);
+  --color-accent: var(--color-accent);
+  --color-accent-ink: var(--color-accent-ink);
+  --color-accent-surface: var(--color-accent-surface);
+  --color-accent-border: var(--color-accent-border);
+  --color-success: var(--color-success);
+  --color-success-surface: var(--color-success-surface);
+  --color-success-border: var(--color-success-border);
+  --color-danger: var(--color-danger);
+  --color-danger-surface: var(--color-danger-surface);
+  --color-danger-border: var(--color-danger-border);
+  --color-warning: var(--color-warning);
+  --color-warning-surface: var(--color-warning-surface);
+  --color-info: var(--color-info);
+  --color-info-surface: var(--color-info-surface);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-label: var(--font-label);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--color-accent-surface);
+  color: var(--color-accent-ink);
+}
