@@ -12,6 +12,7 @@ import {
   FileText,
   Megaphone,
   BellRing,
+  UserX,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/requests", label: "Requests", icon: Package },
   { href: "/dashboard/trips", label: "Trips", icon: Plane },
   { href: "/dashboard/reports", label: "Reports", icon: ShieldAlert },
+  { href: "/dashboard/deletions", label: "Deletions", icon: UserX },
   { href: "/dashboard/config", label: "Configuration", icon: SlidersHorizontal },
   { href: "/dashboard/content", label: "Content", icon: FileText },
   { href: "/dashboard/announcements", label: "Announcements", icon: Megaphone },

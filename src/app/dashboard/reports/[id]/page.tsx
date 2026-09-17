@@ -8,9 +8,23 @@ import { formatDateTime } from "@/lib/format";
 
 export const metadata = { title: "Report detail — Trickle Dash" };
 
+type FileStatus = { fileId: string; status: string; downloadUrl?: string };
+
+async function resolvePhotoURLs(photoIds: string[] | undefined): Promise<string[]> {
+  if (!photoIds?.length) return [];
+  const results = await Promise.allSettled(
+    photoIds.map((fileId) => apiGet<FileStatus>(`/v1/files/${encodeURIComponent(fileId)}/status`))
+  );
+  return results
+    .filter((result): result is PromiseFulfilledResult<FileStatus> => result.status === "fulfilled")
+    .map((result) => result.value.downloadUrl)
+    .filter((url): url is string => Boolean(url));
+}
+
 export default async function ReportDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const report = await apiGet<Report>(`/v1/reports/${encodeURIComponent(id)}`);
+  const photoURLs = await resolvePhotoURLs(report.photos);
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -40,6 +54,27 @@ export default async function ReportDetailPage({ params }: { params: Promise<{ i
         <p className="mt-3 font-body text-xs text-muted">
           Filed {formatDateTime(report.createdAt)} · SLA due {formatDateTime(report.slaDueAt)}
         </p>
+        {report.photos?.length ? (
+          <div className="mt-4">
+            <p className="mb-2 font-label text-xs font-semibold uppercase tracking-wide text-muted">
+              Attached photos ({report.photos.length})
+            </p>
+            {photoURLs.length ? (
+              <div className="flex flex-wrap gap-3">
+                {photoURLs.map((url) => (
+                  <a key={url} href={url} target="_blank" rel="noreferrer" className="block h-24 w-24 overflow-hidden rounded-lg border border-border">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs, not a Next.js-optimizable source */}
+                    <img src={url} alt="Report attachment" className="h-full w-full object-cover" />
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p className="font-body text-xs text-muted">
+                {report.photos.length} photo{report.photos.length > 1 ? "s" : ""} attached, still processing or unavailable.
+              </p>
+            )}
+          </div>
+        ) : null}
       </div>
 
       {report.statusHistory?.length ? (

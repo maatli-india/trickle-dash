@@ -20,6 +20,9 @@ export type AdminUser = {
   banReason?: string;
   bannedByAdminId?: string;
   bannedAt?: string;
+  unbanReason?: string;
+  unbannedByAdminId?: string;
+  unbannedAt?: string;
   createdAt: string;
 };
 
@@ -108,7 +111,7 @@ export type AppVersionConfig = {
 };
 
 export type EffectiveConfig = {
-  featureFlags: { userKYCAadhaar: boolean };
+  featureFlags: { userKYCAadhaar: boolean; userPhotoVerification: boolean };
   parcelSafety: {
     maxDeclaredValue: number;
     maxWeightKg: number;

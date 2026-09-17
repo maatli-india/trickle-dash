@@ -7,13 +7,38 @@ import type { AdminUser } from "@/lib/types";
 
 export function BanControls({ user }: { user: AdminUser }) {
   const [banning, setBanning] = useState(false);
-  const [state, formAction] = useActionState(banUserAction, undefined);
+  const [unbanning, setUnbanning] = useState(false);
+  const [banState, banFormAction] = useActionState(banUserAction, undefined);
+  const [unbanState, unbanFormAction] = useActionState(unbanUserAction, undefined);
 
   if (user.status === "blocked") {
     return (
-      <form action={unbanUserAction.bind(null, user.id)}>
-        <SubmitButton variant="ghost">Unban this account</SubmitButton>
-      </form>
+      <div>
+        {!unbanning ? (
+          <button
+            type="button"
+            onClick={() => setUnbanning(true)}
+            className="rounded-lg border border-border px-4 py-2 font-body text-sm font-medium text-ink hover:bg-surface-muted"
+          >
+            Unban this account
+          </button>
+        ) : (
+          <form action={unbanFormAction} className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+            <input type="hidden" name="userId" value={user.id} />
+            <input
+              name="reason"
+              placeholder="Reason for lifting the ban (required, kept on record)"
+              required
+              className="w-72 rounded-lg border border-border bg-surface px-3 py-2 font-body text-xs text-ink outline-none focus:border-accent"
+            />
+            <SubmitButton variant="ghost">Confirm unban</SubmitButton>
+            <button type="button" onClick={() => setUnbanning(false)} className="font-body text-xs text-muted hover:text-ink">
+              Cancel
+            </button>
+          </form>
+        )}
+        {unbanState?.error ? <p className="mt-2 font-body text-xs text-danger">{unbanState.error}</p> : null}
+      </div>
     );
   }
 
@@ -28,7 +53,7 @@ export function BanControls({ user }: { user: AdminUser }) {
           Ban this account
         </button>
       ) : (
-        <form action={formAction} className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+        <form action={banFormAction} className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
           <input type="hidden" name="userId" value={user.id} />
           <input
             name="reason"
@@ -42,7 +67,7 @@ export function BanControls({ user }: { user: AdminUser }) {
           </button>
         </form>
       )}
-      {state?.error ? <p className="mt-2 font-body text-xs text-danger">{state.error}</p> : null}
+      {banState?.error ? <p className="mt-2 font-body text-xs text-danger">{banState.error}</p> : null}
     </div>
   );
 }

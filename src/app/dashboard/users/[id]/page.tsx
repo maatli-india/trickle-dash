@@ -4,6 +4,7 @@ import { apiGet } from "@/lib/api";
 import type { AdminUser, Paged, ParcelMatch, TravelPlan, Report, UserReview, SavedPlace } from "@/lib/types";
 import { Badge } from "@/components/Badge";
 import { BanControls } from "./BanControls";
+import { SendNotification } from "./SendNotification";
 import { UserDetailTabs } from "./UserDetailTabs";
 import { formatDate, formatDateTime } from "@/lib/format";
 
@@ -69,9 +70,16 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           <BanControls user={user} />
         </div>
 
-        {user.status === "blocked" && user.banReason ? (
-          <div className="mt-4 rounded-xl border border-danger-border bg-danger-surface p-3 font-body text-xs text-danger">
-            Banned {user.bannedAt ? formatDateTime(user.bannedAt) : ""}: {user.banReason}
+        {user.banReason ? (
+          <div className="mt-4 space-y-2">
+            <div className="rounded-xl border border-danger-border bg-danger-surface p-3 font-body text-xs text-danger">
+              Banned {user.bannedAt ? formatDateTime(user.bannedAt) : ""}: {user.banReason}
+            </div>
+            {user.status !== "blocked" && user.unbanReason ? (
+              <div className="rounded-xl border border-border bg-surface-muted p-3 font-body text-xs text-muted">
+                Unbanned {user.unbannedAt ? formatDateTime(user.unbannedAt) : ""}: {user.unbanReason}
+              </div>
+            ) : null}
           </div>
         ) : null}
 
@@ -97,6 +105,8 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           </div>
         </dl>
       </div>
+
+      <SendNotification userId={user.id} />
 
       <div className="rounded-2xl border border-border bg-surface p-6">
         <UserDetailTabs

@@ -10,6 +10,7 @@ export async function updateFeatureFlagsAction(_prev: ActionState, formData: For
   try {
     await apiPatch<EffectiveConfig>("/v1/admin/config/feature-flags", {
       userKYCAadhaar: formData.get("userKYCAadhaar") === "on",
+      userPhotoVerification: formData.get("userPhotoVerification") === "on",
     });
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Could not update feature flags." };

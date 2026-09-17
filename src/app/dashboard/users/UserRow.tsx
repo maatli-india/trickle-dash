@@ -11,7 +11,9 @@ const STATUS_TONE = { active: "success", blocked: "danger", deleted: "neutral", 
 
 export function UserRow({ user }: { user: AdminUser }) {
   const [banning, setBanning] = useState(false);
-  const [state, formAction] = useActionState(banUserAction, undefined);
+  const [unbanning, setUnbanning] = useState(false);
+  const [banState, banFormAction] = useActionState(banUserAction, undefined);
+  const [unbanState, unbanFormAction] = useActionState(unbanUserAction, undefined);
 
   return (
     <tr className="border-b border-border last:border-0">
@@ -28,18 +30,16 @@ export function UserRow({ user }: { user: AdminUser }) {
       <td className="px-4 py-3 font-body text-sm text-muted">{user.completedTrips}</td>
       <td className="px-4 py-3 text-right">
         {user.status === "blocked" ? (
-          <form action={unbanUserAction.bind(null, user.id)}>
-            <button type="submit" className="font-body text-xs font-medium text-success hover:underline">
-              Unban
-            </button>
-          </form>
+          <button type="button" onClick={() => setUnbanning((v) => !v)} className="font-body text-xs font-medium text-success hover:underline">
+            {unbanning ? "Cancel" : "Unban"}
+          </button>
         ) : (
           <button type="button" onClick={() => setBanning((v) => !v)} className="font-body text-xs font-medium text-danger hover:underline">
             {banning ? "Cancel" : "Ban"}
           </button>
         )}
         {banning ? (
-          <form action={formAction} className="mt-2 flex flex-col items-end gap-2">
+          <form action={banFormAction} className="mt-2 flex flex-col items-end gap-2">
             <input type="hidden" name="userId" value={user.id} />
             <input
               name="reason"
@@ -47,9 +47,24 @@ export function UserRow({ user }: { user: AdminUser }) {
               required
               className="w-56 rounded-lg border border-border bg-surface px-2.5 py-1.5 font-body text-xs text-ink outline-none focus:border-danger"
             />
-            {state?.error ? <p className="font-body text-xs text-danger">{state.error}</p> : null}
+            {banState?.error ? <p className="font-body text-xs text-danger">{banState.error}</p> : null}
             <SubmitButton variant="danger" className="!px-3 !py-1.5 !text-xs">
               Confirm ban
+            </SubmitButton>
+          </form>
+        ) : null}
+        {unbanning ? (
+          <form action={unbanFormAction} className="mt-2 flex flex-col items-end gap-2">
+            <input type="hidden" name="userId" value={user.id} />
+            <input
+              name="reason"
+              placeholder="Reason (required)"
+              required
+              className="w-56 rounded-lg border border-border bg-surface px-2.5 py-1.5 font-body text-xs text-ink outline-none focus:border-accent"
+            />
+            {unbanState?.error ? <p className="font-body text-xs text-danger">{unbanState.error}</p> : null}
+            <SubmitButton variant="ghost" className="!px-3 !py-1.5 !text-xs">
+              Confirm unban
             </SubmitButton>
           </form>
         ) : null}
