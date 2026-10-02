@@ -1,11 +1,12 @@
 import type { ComponentType } from "react";
-import { ShieldCheck, PackageSearch, Smartphone } from "lucide-react";
+import { ShieldCheck, PackageSearch, Smartphone, IndianRupee } from "lucide-react";
 import { apiGet } from "@/lib/api";
 import type { EffectiveConfig } from "@/lib/types";
 import { FeatureFlagsForm } from "./FeatureFlagsForm";
 import { ParcelSafetyForm } from "./ParcelSafetyForm";
 import { ProhibitedCategoriesForm } from "./ProhibitedCategoriesForm";
 import { AppVersionForm } from "./AppVersionForm";
+import { ParcelPricingTiersForm } from "./ParcelPricingTiersForm";
 
 export const metadata = { title: "Configuration — Trickle Dash" };
 
@@ -55,6 +56,7 @@ function Category({
 const CATEGORIES = [
   { id: "trust-verification", label: "Trust & verification" },
   { id: "parcel-safety", label: "Parcel safety & compliance" },
+  { id: "pricing", label: "Pricing" },
   { id: "app-delivery", label: "App delivery" },
 ];
 
@@ -104,6 +106,17 @@ export default async function ConfigPage() {
 
         <Section title="Prohibited categories" description="The itemized list senders must declare against before submitting a parcel request.">
           <ProhibitedCategoriesForm categories={config.prohibitedCategories} />
+        </Section>
+      </Category>
+
+      <Category
+        id="pricing"
+        icon={IndianRupee}
+        title="Pricing"
+        description="What a sender sees on top of the price a traveller sets, by bracket."
+      >
+        <Section title="Sender markup tiers" description="Each bracket adds a flat rupee amount to any traveller-set price within it — e.g. 0-1000 at +₹200 means both a ₹1 and a ₹1000 offer show the sender ₹200 more.">
+          <ParcelPricingTiersForm tiers={config.parcelPricingTiers ?? []} />
         </Section>
       </Category>
 

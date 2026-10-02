@@ -20,3 +20,11 @@ export function formatDateTime(iso: string | undefined | null): string {
   if (Number.isNaN(date.getTime())) return "—";
   return `${date.toLocaleDateString(LOCALE, { day: "2-digit", month: "short", year: "numeric" })}, ${date.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" })}`;
 }
+
+/** amountMinor is paise (or the smallest unit of `currency`); only INR is used today. */
+export function formatMoney(amountMinor: number | undefined | null, currency = "INR"): string {
+  if (amountMinor === undefined || amountMinor === null || Number.isNaN(amountMinor)) return "—";
+  const major = amountMinor / 100;
+  const symbol = currency === "INR" ? "₹" : `${currency} `;
+  return `${symbol}${major.toLocaleString(LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}

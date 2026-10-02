@@ -110,6 +110,12 @@ export type AppVersionConfig = {
   androidStoreUrl: string;
 };
 
+export type ParcelPricingTier = {
+  minAmount: number;
+  maxAmount?: number | null;
+  markupAmount: number;
+};
+
 export type EffectiveConfig = {
   featureFlags: { userKYCAadhaar: boolean; userPhotoVerification: boolean };
   parcelSafety: {
@@ -120,6 +126,7 @@ export type EffectiveConfig = {
   };
   prohibitedCategories: ProhibitedCategory[];
   appVersion: AppVersionConfig;
+  parcelPricingTiers: ParcelPricingTier[];
 };
 
 export type UserReview = {
@@ -168,6 +175,43 @@ export type Announcement = {
   startAt: string;
   endAt?: string;
   createdByAdminId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TransactionType = "payment" | "refund";
+
+export type TransactionStatus =
+  | "checkout_open"
+  | "escrowed"
+  | "failed"
+  | "superseded"
+  | "refund_pending"
+  | "refund_processing"
+  | "refund_completed"
+  | "refund_failed";
+
+export type Transaction = {
+  id: string;
+  type: TransactionType;
+  status: TransactionStatus;
+  gateway: string;
+  gatewayRole: string;
+  gatewayOrderId: string;
+  gatewayPaymentId?: string;
+  gatewayRefundRequestId?: string;
+  refundOfTransactionId?: string;
+  entityType: string;
+  entityId: string;
+  userId: string;
+  amountMinor: number;
+  currency: string;
+  attemptNo: number;
+  client?: string;
+  failureReason?: string;
+  failedAt?: string;
+  paidAt?: string;
+  refundedAt?: string;
   createdAt: string;
   updatedAt: string;
 };

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { apiPatch } from "../api";
-import type { EffectiveConfig } from "../types";
+import type { EffectiveConfig, ParcelPricingTier } from "../types";
 
 export type ActionState = { error?: string; success?: boolean } | undefined;
 
@@ -33,6 +33,39 @@ export async function updateParcelSafetyAction(_prev: ActionState, formData: For
     });
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Could not update parcel safety settings." };
+  }
+  revalidatePath("/dashboard/config");
+  return { success: true };
+}
+
+export async function updateParcelPricingTiersAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const raw = String(formData.get("tiersJson") || "[]");
+  let parsed: ParcelPricingTier[];
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return { error: "Could not read the tier list — try again." };
+  }
+  if (!Array.isArray(parsed) || parsed.length === 0) {
+    return { error: "Add at least one pricing tier." };
+  }
+  const tiers = parsed.map((tier) => ({
+    minAmount: Number(tier.minAmount) || 0,
+    maxAmount: tier.maxAmount === null || tier.maxAmount === undefined || tier.maxAmount === ("" as unknown) ? null : Number(tier.maxAmount),
+    markupAmount: Number(tier.markupAmount) || 0,
+  }));
+  for (const tier of tiers) {
+    if (tier.minAmount < 0 || tier.markupAmount < 0) {
+      return { error: "Amounts must be zero or greater." };
+    }
+    if (tier.maxAmount !== null && tier.maxAmount < tier.minAmount) {
+      return { error: "A tier's max amount must be at or above its min amount." };
+    }
+  }
+  try {
+    await apiPatch<EffectiveConfig>("/v1/admin/config/parcel-pricing-tiers", { tiers });
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Could not update the pricing tiers." };
   }
   revalidatePath("/dashboard/config");
   return { success: true };
