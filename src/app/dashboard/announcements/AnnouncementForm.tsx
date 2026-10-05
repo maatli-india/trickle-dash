@@ -26,7 +26,7 @@ export function AnnouncementForm({ announcement }: { announcement?: Announcement
         <label className={LABEL}>Message</label>
         <textarea name="message" rows={3} defaultValue={announcement?.message} required className={FIELD} />
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className={LABEL}>Severity</label>
           <select name="severity" defaultValue={announcement?.severity ?? "info"} className={FIELD}>

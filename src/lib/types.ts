@@ -117,7 +117,7 @@ export type ParcelPricingTier = {
 };
 
 export type EffectiveConfig = {
-  featureFlags: { userKYCAadhaar: boolean; userPhotoVerification: boolean };
+  featureFlags: { userKYCAadhaar: boolean; userPhotoVerification: boolean; referralProgramEnabled: boolean };
   parcelSafety: {
     maxDeclaredValue: number;
     maxWeightKg: number;

@@ -23,7 +23,7 @@ export default async function TripDetailPage({ params }: { params: Promise<{ id:
           </h1>
           <Badge tone={plan.status === "active" ? "success" : "neutral"}>{plan.status}</Badge>
         </div>
-        <dl className="mt-5 grid grid-cols-2 gap-4 font-body text-sm">
+        <dl className="mt-5 grid grid-cols-1 gap-4 font-body text-sm sm:grid-cols-2">
           <div>
             <dt className="font-label text-xs uppercase tracking-wide text-muted">Travel mode</dt>
             <dd className="mt-0.5 text-ink">{plan.travelMode.replace(/_/g, " ")}</dd>

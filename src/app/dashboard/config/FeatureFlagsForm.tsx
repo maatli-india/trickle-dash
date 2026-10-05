@@ -7,9 +7,11 @@ import { SubmitButton } from "@/components/SubmitButton";
 export function FeatureFlagsForm({
   userKYCAadhaar,
   userPhotoVerification,
+  referralProgramEnabled,
 }: {
   userKYCAadhaar: boolean;
   userPhotoVerification: boolean;
+  referralProgramEnabled: boolean;
 }) {
   const [state, formAction] = useActionState(updateFeatureFlagsAction, undefined);
 
@@ -37,6 +39,21 @@ export function FeatureFlagsForm({
           type="checkbox"
           name="userPhotoVerification"
           defaultChecked={userPhotoVerification}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Refer a friend</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Shows the &quot;Refer a friend&quot; entry in the app&apos;s account settings. On by default — this is a kill switch for an
+            already-shipped feature, not a staged rollout.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="referralProgramEnabled"
+          defaultChecked={referralProgramEnabled}
           className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
         />
       </label>

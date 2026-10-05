@@ -90,7 +90,11 @@ export default async function ConfigPage() {
         description="Requirements gating who's allowed to send a parcel or post a trip."
       >
         <Section title="Feature flags" description="Toggle verification requirements on or off.">
-          <FeatureFlagsForm userKYCAadhaar={config.featureFlags.userKYCAadhaar} userPhotoVerification={config.featureFlags.userPhotoVerification} />
+          <FeatureFlagsForm
+            userKYCAadhaar={config.featureFlags.userKYCAadhaar}
+            userPhotoVerification={config.featureFlags.userPhotoVerification}
+            referralProgramEnabled={config.featureFlags.referralProgramEnabled}
+          />
         </Section>
       </Category>
 

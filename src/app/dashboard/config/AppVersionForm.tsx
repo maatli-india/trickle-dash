@@ -14,8 +14,10 @@ export function AppVersionForm({ appVersion }: { appVersion: AppVersionConfig })
   return (
     <form action={formAction} className="space-y-4">
       <p className="rounded-lg border border-accent-border bg-accent-surface px-3 py-2 font-body text-xs text-warning">
-        Not wired into the mobile app yet — the check endpoint (<code className="rounded bg-surface px-1">GET /v1/app/version-check</code>) exists,
-        but the client doesn&apos;t call it. Saving here is safe to do ahead of that client work.
+        Live on both iOS and Android — the app calls <code className="rounded bg-surface px-1">GET /v1/app/version-check</code> at
+        startup. A saved change here reaches the app within the 30s config cache window: <strong>Force update</strong> blocks the
+        entire app (no navigation, nothing dismissible) until the user updates; otherwise, if the app&apos;s version is below
+        Latest version, it shows a dismissible &quot;Update available&quot; prompt instead.
       </p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>

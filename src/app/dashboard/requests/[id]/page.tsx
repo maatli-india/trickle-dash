@@ -45,7 +45,7 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
           <Badge tone={match.safetyHold ? "danger" : "neutral"}>{match.status.replace(/_/g, " ")}</Badge>
         </div>
 
-        <dl className="mt-5 grid grid-cols-2 gap-4 font-body text-sm">
+        <dl className="mt-5 grid grid-cols-1 gap-4 font-body text-sm sm:grid-cols-2">
           <div>
             <dt className="font-label text-xs uppercase tracking-wide text-muted">Category</dt>
             <dd className="mt-0.5 text-ink">{match.parcelCategory || "—"}</dd>
