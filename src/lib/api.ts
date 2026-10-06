@@ -81,6 +81,40 @@ export async function publicPost<T>(path: string, body?: unknown): Promise<{ ok:
   return { ok: true, data: data as T };
 }
 
+// Image resolution. Both backend routes answer with a real HTTP 302 to the
+// actual Kosh URL — fetch() here uses redirect:"manual" so we can read the
+// Location header and hand it to the browser directly (via NextResponse.
+// redirect in the route handlers that call these) instead of following it
+// ourselves and trying to parse image bytes as JSON.
+
+/** Admin-only: resolves ANY file by id (parcel image, report attachment, ...) via /v1/admin/files. No ownership/fileType check — see AdminDownloadURL on the backend. */
+export async function resolveAdminFileURL(fileId: string): Promise<string | null> {
+  const session = await getSession();
+  if (!session) return null;
+  const res = await fetch(`${API_BASE_URL}/v1/admin/files/${fileId}/download-url`, {
+    headers: { "X-Device-ID": "trickle-dash", Authorization: `Bearer ${session.accessToken}` },
+    redirect: "manual",
+    cache: "no-store",
+  });
+  if (res.status >= 300 && res.status < 400) {
+    return res.headers.get("location");
+  }
+  return null;
+}
+
+/** Public: resolves a user's profile picture via the backend's public (no-auth) profile-pic-url route. */
+export async function resolvePublicProfilePicURL(userId: string): Promise<string | null> {
+  const res = await fetch(`${API_BASE_URL}/v1/users/${userId}/profile-pic-url`, {
+    headers: { "X-Device-ID": "trickle-dash" },
+    redirect: "manual",
+    cache: "no-store",
+  });
+  if (res.status >= 300 && res.status < 400) {
+    return res.headers.get("location");
+  }
+  return null;
+}
+
 export const apiGet = <T>(path: string) => request<T>(path);
 export const apiPost = <T>(path: string, body?: unknown) =>
   request<T>(path, { method: "POST", body: body !== undefined ? JSON.stringify(body) : undefined });

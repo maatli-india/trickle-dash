@@ -30,6 +30,15 @@ export function ParcelSafetyForm({ parcelSafety }: { parcelSafety: EffectiveConf
           <label htmlFor="urgentReportSLAMinutes" className={LABEL}>Urgent report SLA (minutes)</label>
           <input id="urgentReportSLAMinutes" name="urgentReportSLAMinutes" type="number" min={1} step="1" defaultValue={parcelSafety.urgentReportSLAMinutes} className={FIELD} />
         </div>
+        <div>
+          <label htmlFor="handoffGeofenceRadiusMeters" className={LABEL}>Pickup/delivery geofence radius (meters)</label>
+          <input id="handoffGeofenceRadiusMeters" name="handoffGeofenceRadiusMeters" type="number" min={100} step="100" defaultValue={parcelSafety.handoffGeofenceRadiusMeters} className={FIELD} />
+          <p className="mt-1 font-body text-xs text-muted">
+            How far a traveler&apos;s device may be from the pickup/delivery address when submitting that handoff code.
+            Kept deliberately loose by default — too small and normal GPS error (especially indoors) starts blocking
+            real pickups/deliveries.
+          </p>
+        </div>
       </div>
       {state?.error ? <p className="font-body text-sm text-danger">{state.error}</p> : null}
       {state?.success ? <p className="font-body text-sm text-success">Saved — takes effect immediately.</p> : null}

@@ -3,6 +3,7 @@ import { ArrowLeft, ShieldCheck, Star } from "lucide-react";
 import { apiGet } from "@/lib/api";
 import type { AdminUser, Paged, ParcelMatch, TravelPlan, Report, UserReview, SavedPlace } from "@/lib/types";
 import { Badge } from "@/components/Badge";
+import { Avatar } from "@/components/Avatar";
 import { BanControls } from "./BanControls";
 import { SendNotification } from "./SendNotification";
 import { UserDetailTabs } from "./UserDetailTabs";
@@ -53,18 +54,21 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
 
       <div className="rounded-2xl border border-border bg-surface p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-display text-xl font-semibold text-ink">{user.name || "Unnamed user"}</h1>
-              {user.verified ? <ShieldCheck size={16} className="text-success" /> : null}
-            </div>
-            <p className="mt-1 font-body text-sm text-muted">
-              {user.phone} {user.email ? `· ${user.email}` : ""}
-            </p>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <Badge tone={user.status === "active" ? "success" : user.status === "blocked" ? "danger" : "neutral"}>{user.status}</Badge>
-              {user.verified ? <Badge tone="success">Identity verified</Badge> : <Badge tone="neutral">Not verified</Badge>}
-              {user.underInvestigation ? <Badge tone="danger">Under investigation</Badge> : null}
+          <div className="flex items-start gap-4">
+            <Avatar src={`/api/images/profile/${user.id}`} name={user.name || "Unnamed user"} size={56} />
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="font-display text-xl font-semibold text-ink">{user.name || "Unnamed user"}</h1>
+                {user.verified ? <ShieldCheck size={16} className="text-success" /> : null}
+              </div>
+              <p className="mt-1 font-body text-sm text-muted">
+                {user.phone} {user.email ? `· ${user.email}` : ""}
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Badge tone={user.status === "active" ? "success" : user.status === "blocked" ? "danger" : "neutral"}>{user.status}</Badge>
+                {user.verified ? <Badge tone="success">Identity verified</Badge> : <Badge tone="neutral">Not verified</Badge>}
+                {user.underInvestigation ? <Badge tone="danger">Under investigation</Badge> : null}
+              </div>
             </div>
           </div>
           <BanControls user={user} />

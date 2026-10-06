@@ -31,6 +31,7 @@ export async function updateParcelSafetyAction(_prev: ActionState, formData: For
       maxWeightKg: num("maxWeightKg"),
       cashInstrumentThresholdINR: num("cashInstrumentThresholdINR"),
       urgentReportSLAMinutes: num("urgentReportSLAMinutes"),
+      handoffGeofenceRadiusMeters: num("handoffGeofenceRadiusMeters"),
     });
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Could not update parcel safety settings." };

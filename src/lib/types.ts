@@ -57,6 +57,8 @@ export type ParcelMatch = {
   inspectionAcknowledged?: boolean;
   safetyHold?: boolean;
   safetyHoldSetAt?: string;
+  parcelImageIds?: string[];
+  declineEvidenceImageIds?: string[];
   createdAt: string;
   updatedAt: string;
 };
@@ -123,6 +125,7 @@ export type EffectiveConfig = {
     maxWeightKg: number;
     cashInstrumentThresholdINR: number;
     urgentReportSLAMinutes: number;
+    handoffGeofenceRadiusMeters: number;
   };
   prohibitedCategories: ProhibitedCategory[];
   appVersion: AppVersionConfig;
@@ -190,6 +193,44 @@ export type TransactionStatus =
   | "refund_processing"
   | "refund_completed"
   | "refund_failed";
+
+export type WeekPoint = { weekStart: string; value: number };
+
+export type TrendMetric = {
+  thisWeek: number;
+  lastWeek: number;
+  thisMonth: number;
+  lastMonth: number;
+  weeklyTrend: WeekPoint[];
+};
+
+export type CityCount = { city: string; count: number };
+
+export type OverviewStats = {
+  totalUsers: number;
+  totalParcelRequests: number;
+  totalTripsPosted: number;
+  reportsAwaitingReview: number;
+  signups: TrendMetric;
+  deliveriesCompleted: TrendMetric;
+  plansCreated: TrendMetric;
+  paymentsCollectedMinor: TrendMetric;
+  refundsMinor: TrendMetric;
+  topOriginCities: CityCount[];
+  topDestinationCities: CityCount[];
+};
+
+export type GoogleSearchActorCount = { userId?: string; deviceId?: string; count: number };
+
+export type GoogleSearchSourceStats = {
+  metric: TrendMetric;
+  topSearchers: GoogleSearchActorCount[];
+};
+
+export type GoogleSearchStats = {
+  selectLocation: GoogleSearchSourceStats;
+  createTrip: GoogleSearchSourceStats;
+};
 
 export type Transaction = {
   id: string;

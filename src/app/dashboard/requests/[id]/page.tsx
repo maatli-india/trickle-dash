@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { apiGet } from "@/lib/api";
 import type { ParcelMatch } from "@/lib/types";
 import { Badge } from "@/components/Badge";
+import { ImageThumb } from "@/components/ImageThumb";
 import { formatDateTime } from "@/lib/format";
 
 export const metadata = { title: "Request detail — Trickle Dash" };
@@ -63,6 +64,32 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
             <dd className="mt-0.5 text-ink">{match.inspectionAcknowledged ? "Yes" : "Not yet"}</dd>
           </div>
         </dl>
+
+        {match.parcelImageIds?.length ? (
+          <div className="mt-5 border-t border-border pt-5">
+            <p className="mb-2 font-label text-xs font-semibold uppercase tracking-wide text-muted">
+              Parcel photos ({match.parcelImageIds.length})
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {match.parcelImageIds.map((fileId) => (
+                <ImageThumb key={fileId} fileId={fileId} alt="Parcel photo" />
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {match.declineEvidenceImageIds?.length ? (
+          <div className="mt-5 border-t border-border pt-5">
+            <p className="mb-2 font-label text-xs font-semibold uppercase tracking-wide text-muted">
+              Decline evidence ({match.declineEvidenceImageIds.length})
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {match.declineEvidenceImageIds.map((fileId) => (
+                <ImageThumb key={fileId} fileId={fileId} alt="Decline evidence photo" />
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {declaration ? (

@@ -33,7 +33,11 @@ export async function setSession(session: Session) {
   const maxAge = Math.max(1, Math.floor((session.expiresAt - Date.now()) / 1000));
   store.set(COOKIE_NAME, JSON.stringify(session), {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // Fail-safe default: secure unless explicitly running in local dev, so
+    // a misconfigured/unset NODE_ENV in production never silently sends the
+    // session cookie over plain HTTP (the opposite of the old
+    // NODE_ENV==="production" check, which failed OPEN on misconfiguration).
+    secure: process.env.NODE_ENV !== "development",
     sameSite: "lax",
     path: "/",
     maxAge,
