@@ -1,7 +1,18 @@
 import "server-only";
 import { getSession } from "./session";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:7003/trickle";
+const DEFAULT_LOCAL_API = "http://localhost:7003/trickle";
+const DEFAULT_REMOTE_API = "https://api.trickle-dev.maatli.com/trickle";
+
+// Netlify/production must not fall back to localhost — that fetch throws
+// and the login server action returns HTTP 500 to the browser.
+function resolveApiBaseUrl() {
+  const fromEnv = process.env.API_BASE_URL?.trim().replace(/\/$/, "");
+  if (fromEnv) return fromEnv;
+  return process.env.NODE_ENV === "production" ? DEFAULT_REMOTE_API : DEFAULT_LOCAL_API;
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 export class ApiError extends Error {
   status: number;
@@ -41,11 +52,22 @@ function extractMessage(data: unknown, text: string, status: number): string {
   return `Request failed (${status})`;
 }
 
+async function apiFetch(path: string, init: RequestInit): Promise<Response> {
+  try {
+    return await fetch(`${API_BASE_URL}${path}`, init);
+  } catch {
+    throw new ApiError(
+      `Cannot reach Trickle API at ${API_BASE_URL}. Set API_BASE_URL on the host and redeploy.`,
+      502,
+    );
+  }
+}
+
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const session = await getSession();
   if (!session) throw new ApiError("Not authenticated", 401);
 
-  const res = await fetch(`${API_BASE_URL}${path}`, {
+  const res = await apiFetch(path, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -67,12 +89,19 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 /** Unauthenticated request — only for the admin login endpoint. */
 export async function publicPost<T>(path: string, body?: unknown): Promise<{ ok: true; data: T } | { ok: false; message: string; status: number }> {
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "X-Device-ID": "trickle-dash" },
-    body: body ? JSON.stringify(body) : undefined,
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await apiFetch(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Device-ID": "trickle-dash" },
+      body: body ? JSON.stringify(body) : undefined,
+      cache: "no-store",
+    });
+  } catch (error) {
+    const message = error instanceof ApiError ? error.message : `Cannot reach Trickle API at ${API_BASE_URL}.`;
+    const status = error instanceof ApiError ? error.status : 502;
+    return { ok: false, message, status };
+  }
   const text = await res.text();
   const data = safeParseJSON(text);
   if (!res.ok) {
@@ -91,7 +120,7 @@ export async function publicPost<T>(path: string, body?: unknown): Promise<{ ok:
 export async function resolveAdminFileURL(fileId: string): Promise<string | null> {
   const session = await getSession();
   if (!session) return null;
-  const res = await fetch(`${API_BASE_URL}/v1/admin/files/${fileId}/download-url`, {
+  const res = await apiFetch(`/v1/admin/files/${fileId}/download-url`, {
     headers: { "X-Device-ID": "trickle-dash", Authorization: `Bearer ${session.accessToken}` },
     redirect: "manual",
     cache: "no-store",
@@ -104,7 +133,7 @@ export async function resolveAdminFileURL(fileId: string): Promise<string | null
 
 /** Public: resolves a user's profile picture via the backend's public (no-auth) profile-pic-url route. */
 export async function resolvePublicProfilePicURL(userId: string): Promise<string | null> {
-  const res = await fetch(`${API_BASE_URL}/v1/users/${userId}/profile-pic-url`, {
+  const res = await apiFetch(`/v1/users/${userId}/profile-pic-url`, {
     headers: { "X-Device-ID": "trickle-dash" },
     redirect: "manual",
     cache: "no-store",
