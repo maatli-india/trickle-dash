@@ -1,7 +1,7 @@
 import "server-only";
 import { getSession } from "./session";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:7003/trickle";
+const API_BASE_URL = process.env.API_BASE_URL || "https://api-dev.trickle.org.in/trickle";
 
 export class ApiError extends Error {
   status: number;
