@@ -32,6 +32,12 @@ export default async function TripDetailPage({ params }: { params: Promise<{ id:
             <dt className="font-label text-xs uppercase tracking-wide text-muted">Traveler</dt>
             <dd className="mt-0.5 text-ink">{plan.travelerId}</dd>
           </div>
+          {plan.alternatePhone ? (
+            <div>
+              <dt className="font-label text-xs uppercase tracking-wide text-muted">Alternate contact</dt>
+              <dd className="mt-0.5 text-ink">{plan.alternatePhone}</dd>
+            </div>
+          ) : null}
           <div>
             <dt className="font-label text-xs uppercase tracking-wide text-muted">Departure</dt>
             <dd className="mt-0.5 text-ink">{plan.departureDate}</dd>

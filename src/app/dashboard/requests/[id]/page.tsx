@@ -5,6 +5,9 @@ import type { ParcelMatch } from "@/lib/types";
 import { Badge } from "@/components/Badge";
 import { ImageThumb } from "@/components/ImageThumb";
 import { formatDateTime } from "@/lib/format";
+import { DisputeResolutionForm } from "./DisputeResolutionForm";
+
+const DISPUTE_RESOLUTION_POLICY = "admin_dispute_resolution";
 
 export const metadata = { title: "Request detail — Trickle Dash" };
 
@@ -22,6 +25,8 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const match = await apiGet<ParcelMatch>(`/v1/admin/parcel-matches/${encodeURIComponent(id)}`);
   const declaration = match.safetyDeclaration;
+  const resolution =
+    match.cancellation?.policy === DISPUTE_RESOLUTION_POLICY ? match.cancellation : null;
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -32,6 +37,30 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
       {match.safetyHold ? (
         <div className="rounded-xl border border-danger-border bg-danger-surface px-4 py-3 font-body text-sm text-danger">
           This shipment is on hold pending a safety review. It cannot proceed to handoff or delivery until an admin clears it via the linked report.
+        </div>
+      ) : null}
+
+      {match.disputed && !resolution ? (
+        <div className="space-y-3 rounded-xl border border-danger-border bg-danger-surface px-4 py-4">
+          <div>
+            <p className="font-body text-sm font-semibold text-danger">Disputed — needs resolution</p>
+            {match.disputeReason ? (
+              <p className="mt-1 font-body text-sm text-danger">{match.disputeReason}</p>
+            ) : null}
+          </div>
+          <DisputeResolutionForm match={match} />
+        </div>
+      ) : null}
+
+      {resolution ? (
+        <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 font-body text-sm text-ink">
+          <p className="font-semibold">Dispute resolved</p>
+          <p className="mt-1 text-muted">
+            Refunded ₹{resolution.refundAmount.toFixed(2)} to the sender · platform retained ₹{resolution.feeAmount.toFixed(2)}
+            {resolution.refundStatus ? ` · refund ${resolution.refundStatus.replace(/_/g, " ")}` : ""}
+          </p>
+          {resolution.reason ? <p className="mt-1 text-muted">Reason: {resolution.reason}</p> : null}
+          <p className="mt-1 text-xs text-muted">Resolved by {resolution.cancelledByUserId} on {formatDateTime(resolution.createdAt)}</p>
         </div>
       ) : null}
 

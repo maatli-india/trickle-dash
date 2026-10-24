@@ -5,6 +5,7 @@ import { StatCard } from "@/components/StatCard";
 import { TrendCard } from "@/components/TrendCard";
 import { TopCitiesCard } from "@/components/TopCitiesCard";
 import { GoogleSearchTopSearchersCard } from "@/components/GoogleSearchTopSearchersCard";
+import { GoogleSearchTopLocationsCard } from "@/components/GoogleSearchTopLocationsCard";
 
 export const metadata = { title: "Overview — Trickle Dash" };
 
@@ -67,6 +68,10 @@ export default async function OverviewPage() {
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
           <GoogleSearchTopSearchersCard title="Top searchers — Select Location" searchers={googleSearchStats.selectLocation.topSearchers} />
           <GoogleSearchTopSearchersCard title="Top searchers — Create Trip" searchers={googleSearchStats.createTrip.topSearchers} />
+        </div>
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <GoogleSearchTopLocationsCard title="Top searched locations — Select Location" locations={googleSearchStats.selectLocation.topLocations} />
+          <GoogleSearchTopLocationsCard title="Top searched locations — Create Trip" locations={googleSearchStats.createTrip.topLocations} />
         </div>
       </div>
 

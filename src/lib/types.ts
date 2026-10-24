@@ -17,6 +17,7 @@ export type AdminUser = {
   ratingCount: number;
   completedTrips: number;
   underInvestigation?: boolean;
+  investigationCaseIds?: string[];
   banReason?: string;
   bannedByAdminId?: string;
   bannedAt?: string;
@@ -39,6 +40,22 @@ export type ParcelSafetyDeclaration = {
   declaredAt: string;
 };
 
+export type CancellationOutcome = {
+  cancelledBy: string;
+  cancelledByUserId: string;
+  cancelledByName?: string;
+  policy: string;
+  feeAmount: number;
+  refundAmount: number;
+  refundStatus?: string;
+  refundTransactionId?: string;
+  refundFailureReason?: string;
+  travelerReliabilityHit: boolean;
+  reasonCode?: string;
+  reason?: string;
+  createdAt: string;
+};
+
 export type ParcelMatch = {
   id: string;
   bookedByUserId: string;
@@ -59,6 +76,23 @@ export type ParcelMatch = {
   safetyHoldSetAt?: string;
   parcelImageIds?: string[];
   declineEvidenceImageIds?: string[];
+  // disputed/disputeReason are set by the pickup-inspection decline, a
+  // reported no-show, or a mid-transit exception — see the backend's
+  // ResolveDispute. cancellation (when its policy is
+  // "admin_dispute_resolution") is how that dispute was resolved; a
+  // normal "free"/"late" policy there means a regular self-service
+  // cancellation instead, not an admin resolution.
+  disputed?: boolean;
+  disputeReason?: string;
+  cancellation?: CancellationOutcome;
+  // agreedPrice/pricing are admin-only fields the backend's
+  // NewParcelMatchView only populates for an admin viewer — used here to
+  // show the actual captured amount a refund is capped against.
+  agreedPrice?: number;
+  pricing?: {
+    totalPayableAmount?: number;
+    senderPayableAmount?: number;
+  };
   createdAt: string;
   updatedAt: string;
 };
@@ -74,6 +108,7 @@ export type TravelPlan = {
   status: "active" | "completed" | "cancelled";
   maxWeightKg?: number;
   pricePerPackage?: number;
+  alternatePhone?: string;
   createdAt: string;
 };
 
@@ -222,14 +257,68 @@ export type OverviewStats = {
 
 export type GoogleSearchActorCount = { userId?: string; deviceId?: string; count: number };
 
+export type GoogleSearchLocationCount = { placeId: string; address: string; lat: number; lng: number; count: number };
+
 export type GoogleSearchSourceStats = {
   metric: TrendMetric;
   topSearchers: GoogleSearchActorCount[];
+  topLocations: GoogleSearchLocationCount[];
 };
 
 export type GoogleSearchStats = {
   selectLocation: GoogleSearchSourceStats;
   createTrip: GoogleSearchSourceStats;
+};
+
+// Support chats — the "chat with support" feature in the mobile app.
+// Mirrors the transitorder backend's /v1/admin/support-chats contract.
+export type SupportThreadStatus = "open" | "resolved" | "closed";
+
+export type SupportThread = {
+  id: string;
+  userId: string;
+  reason: string;
+  reasonLabel: string;
+  matchId?: string;
+  role?: "sender" | "traveller";
+  status: SupportThreadStatus;
+  assignedAgentId?: string;
+  lastMessageAt: string;
+  lastMessagePreview: string;
+  createdAt: string;
+  updatedAt: string;
+  resolvedAt?: string;
+};
+
+// Same message shape as the existing mobile chat (see src/api/chat.js in
+// the trickle app repo) — this admin UI only renders type "text" for v1
+// and ignores "file"/"location" messages.
+export type ChatMessageType = "text" | "file" | "location";
+
+export type ChatMessage = {
+  id: string;
+  chatId: string;
+  senderId: string;
+  type: ChatMessageType;
+  text?: string;
+  createdAt: string;
+  isRead: boolean;
+  replyToId?: string;
+};
+
+// Wire protocol for GET {WS_BASE_URL}/v1/admin/support-chats/:id/ws. Server
+// -> client frame names mirror the mobile app's existing chat websocket
+// protocol exactly; client -> server uses a "support_" prefix since this
+// feature shares one socket server (and its single global per-event-name
+// handler table) with the existing parcel-match chat.
+export type SupportChatWsServerFrame =
+  | { event: "history"; payload: ChatMessage[] }
+  | { event: "connected" }
+  | { event: "message"; payload: ChatMessage };
+
+export type SupportChatWsClientFrame = {
+  event: "support_message";
+  payload: { type: "text"; text: string };
 };
 
 export type Transaction = {

@@ -74,6 +74,16 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
           <BanControls user={user} />
         </div>
 
+        {user.underInvestigation && user.investigationCaseIds?.length ? (
+          <div className="mt-4 space-y-2">
+            {user.investigationCaseIds.map((note, index) => (
+              <div key={index} className="rounded-xl border border-danger-border bg-danger-surface p-3 font-body text-xs text-danger">
+                {note}
+              </div>
+            ))}
+          </div>
+        ) : null}
+
         {user.banReason ? (
           <div className="mt-4 space-y-2">
             <div className="rounded-xl border border-danger-border bg-danger-surface p-3 font-body text-xs text-danger">

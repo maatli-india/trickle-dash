@@ -15,6 +15,7 @@ import {
   Megaphone,
   BellRing,
   UserX,
+  MessageCircle,
   X,
 } from "lucide-react";
 
@@ -25,6 +26,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/trips", label: "Trips", icon: Plane },
   { href: "/dashboard/payments", label: "Payments", icon: Wallet },
   { href: "/dashboard/reports", label: "Reports", icon: ShieldAlert },
+  { href: "/dashboard/support-chats", label: "Support chats", icon: MessageCircle },
   { href: "/dashboard/deletions", label: "Deletions", icon: UserX },
   { href: "/dashboard/config", label: "Configuration", icon: SlidersHorizontal },
   { href: "/dashboard/content", label: "Content", icon: FileText },
