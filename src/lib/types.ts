@@ -165,6 +165,9 @@ export type EffectiveConfig = {
   prohibitedCategories: ProhibitedCategory[];
   appVersion: AppVersionConfig;
   parcelPricingTiers: ParcelPricingTier[];
+  // Storage/API only today — nothing in the pricing calculation reads
+  // these values yet (see transitorder's AppConfigPricingPercentages).
+  pricingPercentages: { senderPricePercentage: number; travelerPricePercentage: number };
 };
 
 export type UserReview = {

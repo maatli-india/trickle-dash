@@ -7,6 +7,7 @@ import { ParcelSafetyForm } from "./ParcelSafetyForm";
 import { ProhibitedCategoriesForm } from "./ProhibitedCategoriesForm";
 import { AppVersionForm } from "./AppVersionForm";
 import { ParcelPricingTiersForm } from "./ParcelPricingTiersForm";
+import { PricingPercentagesForm } from "./PricingPercentagesForm";
 
 export const metadata = { title: "Configuration — Trickle Dash" };
 
@@ -121,6 +122,9 @@ export default async function ConfigPage() {
       >
         <Section title="Sender markup tiers" description="Each bracket adds a flat rupee amount to any traveller-set price within it — e.g. 0-1000 at +₹200 means both a ₹1 and a ₹1000 offer show the sender ₹200 more.">
           <ParcelPricingTiersForm tiers={config.parcelPricingTiers ?? []} />
+        </Section>
+        <Section title="Pricing percentages" description="Storage only for now — not yet applied to any request's pricing. How much extra (%) a sender pays, and how much (%) a traveller receives, of the agreed price.">
+          <PricingPercentagesForm pricingPercentages={config.pricingPercentages ?? { senderPricePercentage: 0, travelerPricePercentage: 100 }} />
         </Section>
       </Category>
 
