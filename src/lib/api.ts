@@ -144,6 +144,48 @@ export async function resolvePublicProfilePicURL(userId: string): Promise<string
   return null;
 }
 
+/**
+ * Admin-only: proxies a binary POST to the backend, returning the raw
+ * response body plus the headers a download needs — the browser can't
+ * attach the admin's bearer token itself, and the xlsx payload isn't JSON,
+ * so this bypasses `request()`'s JSON parsing entirely (same "session
+ * attaches the token server-side" role as resolveAdminFileURL, but for a
+ * POST + binary body instead of a GET + redirect).
+ */
+export async function postForFile(
+  path: string,
+  body: unknown,
+): Promise<{ ok: true; bytes: ArrayBuffer; contentType: string; filename: string } | { ok: false; message: string; status: number }> {
+  const session = await getSession();
+  if (!session) return { ok: false, message: "Not authenticated", status: 401 };
+
+  const res = await apiFetch(path, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Device-ID": "trickle-dash",
+      Authorization: `Bearer ${session.accessToken}`,
+    },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    const data = safeParseJSON(text);
+    return { ok: false, message: extractMessage(data, text, res.status), status: res.status };
+  }
+
+  const disposition = res.headers.get("content-disposition") || "";
+  const match = disposition.match(/filename="?([^"]+)"?/);
+  return {
+    ok: true,
+    bytes: await res.arrayBuffer(),
+    contentType: res.headers.get("content-type") || "application/octet-stream",
+    filename: match?.[1] || "download",
+  };
+}
+
 export const apiGet = <T>(path: string) => request<T>(path);
 export const apiPost = <T>(path: string, body?: unknown) =>
   request<T>(path, { method: "POST", body: body !== undefined ? JSON.stringify(body) : undefined });

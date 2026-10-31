@@ -348,3 +348,34 @@ export type Transaction = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type PayoutStatus = "due" | "exported" | "paid" | "failed";
+
+export type PayoutBankSnapshot = {
+  accountHolderName: string;
+  ifsc: string;
+  bankName: string;
+  accountType: string;
+};
+
+export type Payout = {
+  id: string;
+  matchId: string;
+  travelerUserId: string;
+  travelerName?: string;
+  route?: string;
+  amount: number;
+  status: PayoutStatus;
+  bankReady?: boolean;
+  bankAccountSnapshot?: PayoutBankSnapshot;
+  beneficiaryEmail?: string;
+  exportBatchId?: string;
+  exportedAt?: string;
+  exportedByAdminId?: string;
+  paidAt?: string;
+  utr?: string;
+  markedPaidByAdminId?: string;
+  failureReason?: string;
+  createdAt: string;
+  updatedAt: string;
+};
