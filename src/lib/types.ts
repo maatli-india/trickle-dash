@@ -165,6 +165,9 @@ export type EffectiveConfig = {
   prohibitedCategories: ProhibitedCategory[];
   appVersion: AppVersionConfig;
   parcelPricingTiers: ParcelPricingTier[];
+  // Storage/API only today — nothing in the pricing calculation reads
+  // these values yet (see transitorder's AppConfigPricingPercentages).
+  pricingPercentages: { senderPricePercentage: number; travelerPricePercentage: number };
 };
 
 export type UserReview = {
@@ -342,6 +345,37 @@ export type Transaction = {
   failedAt?: string;
   paidAt?: string;
   refundedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PayoutStatus = "due" | "exported" | "paid" | "failed";
+
+export type PayoutBankSnapshot = {
+  accountHolderName: string;
+  ifsc: string;
+  bankName: string;
+  accountType: string;
+};
+
+export type Payout = {
+  id: string;
+  matchId: string;
+  travelerUserId: string;
+  travelerName?: string;
+  route?: string;
+  amount: number;
+  status: PayoutStatus;
+  bankReady?: boolean;
+  bankAccountSnapshot?: PayoutBankSnapshot;
+  beneficiaryEmail?: string;
+  exportBatchId?: string;
+  exportedAt?: string;
+  exportedByAdminId?: string;
+  paidAt?: string;
+  utr?: string;
+  markedPaidByAdminId?: string;
+  failureReason?: string;
   createdAt: string;
   updatedAt: string;
 };

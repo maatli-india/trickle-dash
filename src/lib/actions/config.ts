@@ -73,6 +73,33 @@ export async function updateParcelPricingTiersAction(_prev: ActionState, formDat
   return { success: true };
 }
 
+// updatePricingPercentagesAction is storage/API only today — nothing in the
+// pricing calculation reads these values yet (see transitorder's
+// AppConfigPricingPercentages doc comment).
+export async function updatePricingPercentagesAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const num = (key: string) => {
+    const value = formData.get(key);
+    return value ? Number(value) : undefined;
+  };
+  const senderPricePercentage = num("senderPricePercentage");
+  const travelerPricePercentage = num("travelerPricePercentage");
+  for (const value of [senderPricePercentage, travelerPricePercentage]) {
+    if (value !== undefined && (value < 0 || value > 100)) {
+      return { error: "Pricing percentages must be between 0 and 100." };
+    }
+  }
+  try {
+    await apiPatch<EffectiveConfig>("/v1/admin/config/pricing-percentages", {
+      senderPricePercentage,
+      travelerPricePercentage,
+    });
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Could not update pricing percentages." };
+  }
+  revalidatePath("/dashboard/config");
+  return { success: true };
+}
+
 export async function updateAppVersionAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   try {
     await apiPatch<EffectiveConfig>("/v1/admin/config/app-version", {
