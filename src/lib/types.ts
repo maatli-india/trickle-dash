@@ -154,7 +154,15 @@ export type ParcelPricingTier = {
 };
 
 export type EffectiveConfig = {
-  featureFlags: { userKYCAadhaar: boolean; userPhotoVerification: boolean; referralProgramEnabled: boolean };
+  featureFlags: {
+    userKYCAadhaar: boolean;
+    userPhotoVerification: boolean;
+    referralProgramEnabled: boolean;
+    roundTripCreationEnabled: boolean;
+    multiDayTripCreationEnabled: boolean;
+    nearbyVisibilityEnabled: boolean;
+    boardingPassScanEnabled: boolean;
+  };
   parcelSafety: {
     maxDeclaredValue: number;
     maxWeightKg: number;
