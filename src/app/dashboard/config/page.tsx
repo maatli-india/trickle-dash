@@ -95,6 +95,10 @@ export default async function ConfigPage() {
             userKYCAadhaar={config.featureFlags.userKYCAadhaar}
             userPhotoVerification={config.featureFlags.userPhotoVerification}
             referralProgramEnabled={config.featureFlags.referralProgramEnabled}
+            roundTripCreationEnabled={config.featureFlags.roundTripCreationEnabled}
+            multiDayTripCreationEnabled={config.featureFlags.multiDayTripCreationEnabled}
+            nearbyVisibilityEnabled={config.featureFlags.nearbyVisibilityEnabled}
+            boardingPassScanEnabled={config.featureFlags.boardingPassScanEnabled}
           />
         </Section>
       </Category>

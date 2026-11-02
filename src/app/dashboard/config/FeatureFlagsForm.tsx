@@ -8,10 +8,18 @@ export function FeatureFlagsForm({
   userKYCAadhaar,
   userPhotoVerification,
   referralProgramEnabled,
+  roundTripCreationEnabled,
+  multiDayTripCreationEnabled,
+  nearbyVisibilityEnabled,
+  boardingPassScanEnabled,
 }: {
   userKYCAadhaar: boolean;
   userPhotoVerification: boolean;
   referralProgramEnabled: boolean;
+  roundTripCreationEnabled: boolean;
+  multiDayTripCreationEnabled: boolean;
+  nearbyVisibilityEnabled: boolean;
+  boardingPassScanEnabled: boolean;
 }) {
   const [state, formAction] = useActionState(updateFeatureFlagsAction, undefined);
 
@@ -54,6 +62,67 @@ export function FeatureFlagsForm({
           type="checkbox"
           name="referralProgramEnabled"
           defaultChecked={referralProgramEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Round-trip creation</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Shows &quot;Add a return trip?&quot; on a traveler&apos;s posted trip. Off by default — staged rollout, not yet in the submitted
+            app store build&apos;s active UI.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="roundTripCreationEnabled"
+          defaultChecked={roundTripCreationEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Multi-day (weekday) trip creation</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Lets a traveler post the same trip across several weekdays in one go. Off by default — staged rollout, not yet in the
+            submitted app store build&apos;s active UI.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="multiDayTripCreationEnabled"
+          defaultChecked={multiDayTripCreationEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Nearby visibility toggle</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Shows the &quot;Visible to nearby users&quot; setting in the app and enforces it on the undirected &quot;nearby&quot; browse search
+            (Home&apos;s nearby cards, TravellerResults&apos; nearby mode). Never affects exact-route search results. Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="nearbyVisibilityEnabled"
+          defaultChecked={nearbyVisibilityEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Boarding-pass scan</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Shows the &quot;scan a boarding pass&quot; entry point on CreateTrip and enables POST /v1/boarding-pass/parse. Decoding happens
+            on-device (ML Kit) — the backend only ever receives the already-decoded barcode string, never an image, and nothing is
+            persisted. Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="boardingPassScanEnabled"
+          defaultChecked={boardingPassScanEnabled}
           className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
         />
       </label>

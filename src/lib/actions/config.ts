@@ -12,6 +12,10 @@ export async function updateFeatureFlagsAction(_prev: ActionState, formData: For
       userKYCAadhaar: formData.get("userKYCAadhaar") === "on",
       userPhotoVerification: formData.get("userPhotoVerification") === "on",
       referralProgramEnabled: formData.get("referralProgramEnabled") === "on",
+      roundTripCreationEnabled: formData.get("roundTripCreationEnabled") === "on",
+      multiDayTripCreationEnabled: formData.get("multiDayTripCreationEnabled") === "on",
+      nearbyVisibilityEnabled: formData.get("nearbyVisibilityEnabled") === "on",
+      boardingPassScanEnabled: formData.get("boardingPassScanEnabled") === "on",
     });
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Could not update feature flags." };
