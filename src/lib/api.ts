@@ -2,14 +2,14 @@ import "server-only";
 import { getSession } from "./session";
 
 const DEFAULT_LOCAL_API = "http://localhost:7003/trickle";
-const DEFAULT_REMOTE_API = "https://api.trickle-dev.maatli.com/trickle";
 
-// Netlify/production must not fall back to localhost — that fetch throws
-// and the login server action returns HTTP 500 to the browser.
 function resolveApiBaseUrl() {
   const fromEnv = process.env.API_BASE_URL?.trim().replace(/\/$/, "");
   if (fromEnv) return fromEnv;
-  return process.env.NODE_ENV === "production" ? DEFAULT_REMOTE_API : DEFAULT_LOCAL_API;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("API_BASE_URL is required in production.");
+  }
+  return DEFAULT_LOCAL_API;
 }
 
 const API_BASE_URL = resolveApiBaseUrl();
