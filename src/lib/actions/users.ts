@@ -1,8 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { apiPost } from "../api";
+import { apiGet, apiPost } from "../api";
 import type { ActionState } from "./config";
+import type { UserSuggestion } from "../types";
+
+/**
+ * Typeahead for a Campaign manual segment — active users whose email or
+ * phone starts with q. Called directly from a client component (not via
+ * useActionState/<form>), same direct-call pattern as previewSegmentAction.
+ */
+export async function suggestUsersAction(q: string): Promise<UserSuggestion[]> {
+  const trimmed = q.trim();
+  if (trimmed.length < 2) return [];
+  return apiGet<UserSuggestion[]>(`/v1/admin/users/suggest?q=${encodeURIComponent(trimmed)}&limit=8`);
+}
 
 export async function banUserAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const userId = String(formData.get("userId") || "");

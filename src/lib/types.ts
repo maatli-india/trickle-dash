@@ -162,6 +162,10 @@ export type EffectiveConfig = {
     multiDayTripCreationEnabled: boolean;
     nearbyVisibilityEnabled: boolean;
     boardingPassScanEnabled: boolean;
+    hindiLanguageEnabled: boolean;
+    tripWaypointsEnabled: boolean;
+    supportBotEnabled: boolean;
+    walkingModeEnabled: boolean;
   };
   parcelSafety: {
     maxDeclaredValue: number;
@@ -202,6 +206,8 @@ export type NotificationTemplateCatalogEntry = {
   description: string;
   title: string;
   body: string;
+  titleHi?: string;
+  bodyHi?: string;
   isCustomized: boolean;
   updatedAt?: string;
 };
@@ -226,6 +232,61 @@ export type Announcement = {
   createdByAdminId?: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type SegmentType = "rule" | "manual";
+
+export type SegmentRule = {
+  createdAfter?: string;
+  createdBefore?: string;
+  status?: "active" | "deleted" | "blocked" | "inactive";
+  referredByCode?: string;
+};
+
+export type Segment = {
+  id: string;
+  name: string;
+  type: SegmentType;
+  rule?: SegmentRule;
+  manualEntries?: string[];
+  createdByAdminId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SegmentPreviewResult = {
+  matchedCount: number;
+  unresolvedEntries?: string[];
+};
+
+export type UserSuggestion = {
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+};
+
+export type CampaignStatus = "draft" | "sending" | "completed" | "failed";
+
+export type Campaign = {
+  id: string;
+  name: string;
+  segmentId: string;
+  title: string;
+  body: string;
+  deeplink?: string;
+  target?: string;
+  ignorePushPreference: boolean;
+  status: CampaignStatus;
+  matchedCount: number;
+  usersWithTokenCount: number;
+  sentCount: number;
+  failedCount: number;
+  unresolvedEntries?: string[];
+  errorMessage?: string;
+  createdByAdminId?: string;
+  createdAt: string;
+  completedAt?: string;
 };
 
 export type TransactionType = "payment" | "refund";

@@ -12,6 +12,10 @@ export function FeatureFlagsForm({
   multiDayTripCreationEnabled,
   nearbyVisibilityEnabled,
   boardingPassScanEnabled,
+  hindiLanguageEnabled,
+  tripWaypointsEnabled,
+  supportBotEnabled,
+  walkingModeEnabled,
 }: {
   userKYCAadhaar: boolean;
   userPhotoVerification: boolean;
@@ -20,6 +24,10 @@ export function FeatureFlagsForm({
   multiDayTripCreationEnabled: boolean;
   nearbyVisibilityEnabled: boolean;
   boardingPassScanEnabled: boolean;
+  hindiLanguageEnabled: boolean;
+  tripWaypointsEnabled: boolean;
+  supportBotEnabled: boolean;
+  walkingModeEnabled: boolean;
 }) {
   const [state, formAction] = useActionState(updateFeatureFlagsAction, undefined);
 
@@ -123,6 +131,72 @@ export function FeatureFlagsForm({
           type="checkbox"
           name="boardingPassScanEnabled"
           defaultChecked={boardingPassScanEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Hindi language</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Shows the language picker in the app&apos;s Account settings (English/Hindi) for the translated screens, and lets the backend
+            send Hindi push notifications and OTP emails to users who pick it. OTP SMS stays English regardless — the SMS provider only
+            sends pre-approved, DLT-registered templates, a separate operational step. Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="hindiLanguageEnabled"
+          defaultChecked={hindiLanguageEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Trip waypoints</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Lets a traveler add optional stops along the route when posting/editing a trip (e.g. &quot;stopping in Jaipur, can meet near
+            the highway exit&quot;), shown to senders on trip details for route transparency. Purely informational — never affects
+            matching, pricing, or capacity. Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="tripWaypointsEnabled"
+          defaultChecked={tripWaypointsEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Support bot (L1 FAQ)</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Answers a user&apos;s first message in a support chat from a fixed set of FAQ topics (pricing, cancellation, safety,
+            handover, how Trickle works) — fully native, no AI model or third-party API, no network call. Anything it doesn&apos;t
+            recognize, or that needs a specific user&apos;s own account/request data, hands straight to a human. Shows up as
+            &quot;Trickle Support&quot; — indistinguishable from a human agent to the user. Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="supportBotEnabled"
+          defaultChecked={supportBotEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Walking Mode (hyperlocal errand posts)</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Lets a user post that they&apos;re walking/biking somewhere so nearby users can ask them to pick something up too.
+            Deliberately separate from the Travel Plan/Parcel Match flow — no pricing, escrow, commission or GST; payment happens
+            outside the app (cash/UPI). Discovery is a feed screen and a live Home-screen card, no push notifications in v1. Off by
+            default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="walkingModeEnabled"
+          defaultChecked={walkingModeEnabled}
           className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
         />
       </label>

@@ -16,6 +16,10 @@ export async function updateFeatureFlagsAction(_prev: ActionState, formData: For
       multiDayTripCreationEnabled: formData.get("multiDayTripCreationEnabled") === "on",
       nearbyVisibilityEnabled: formData.get("nearbyVisibilityEnabled") === "on",
       boardingPassScanEnabled: formData.get("boardingPassScanEnabled") === "on",
+      hindiLanguageEnabled: formData.get("hindiLanguageEnabled") === "on",
+      tripWaypointsEnabled: formData.get("tripWaypointsEnabled") === "on",
+      supportBotEnabled: formData.get("supportBotEnabled") === "on",
+      walkingModeEnabled: formData.get("walkingModeEnabled") === "on",
     });
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Could not update feature flags." };
