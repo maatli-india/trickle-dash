@@ -99,6 +99,10 @@ export default async function ConfigPage() {
             multiDayTripCreationEnabled={config.featureFlags.multiDayTripCreationEnabled}
             nearbyVisibilityEnabled={config.featureFlags.nearbyVisibilityEnabled}
             boardingPassScanEnabled={config.featureFlags.boardingPassScanEnabled}
+            hindiLanguageEnabled={config.featureFlags.hindiLanguageEnabled}
+            tripWaypointsEnabled={config.featureFlags.tripWaypointsEnabled}
+            supportBotEnabled={config.featureFlags.supportBotEnabled}
+            walkingModeEnabled={config.featureFlags.walkingModeEnabled}
           />
         </Section>
       </Category>

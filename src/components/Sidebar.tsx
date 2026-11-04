@@ -17,6 +17,7 @@ import {
   BellRing,
   UserX,
   MessageCircle,
+  Send,
   X,
 } from "lucide-react";
 
@@ -34,6 +35,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/content", label: "Content", icon: FileText },
   { href: "/dashboard/announcements", label: "Announcements", icon: Megaphone },
   { href: "/dashboard/notifications", label: "Notifications", icon: BellRing },
+  { href: "/dashboard/campaigns", label: "Campaigns", icon: Send },
 ];
 
 function SidebarBrand() {

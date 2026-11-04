@@ -9,9 +9,16 @@ export async function updateNotificationTemplateAction(_prev: ActionState, formD
   const type = String(formData.get("type") || "");
   const title = String(formData.get("title") || "").trim();
   const body = String(formData.get("body") || "").trim();
+  const titleHi = String(formData.get("titleHi") || "").trim();
+  const bodyHi = String(formData.get("bodyHi") || "").trim();
   if (!type || !title || !body) return { error: "Title and body are required." };
   try {
-    await apiPatch<NotificationTemplateCatalogEntry>(`/v1/admin/notification-templates/${encodeURIComponent(type)}`, { title, body });
+    await apiPatch<NotificationTemplateCatalogEntry>(`/v1/admin/notification-templates/${encodeURIComponent(type)}`, {
+      title,
+      body,
+      titleHi,
+      bodyHi,
+    });
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Could not save this template." };
   }

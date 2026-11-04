@@ -49,6 +49,30 @@ export function NotificationTemplateEditor({ entry }: { entry: NotificationTempl
               className="w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 font-body text-sm text-ink outline-none focus:border-accent"
             />
           </div>
+          <div className="border-t border-border pt-4">
+            <p className="mb-3 font-label text-xs font-semibold uppercase tracking-wide text-muted">
+              Hindi variant (optional — used only when both fields are filled)
+            </p>
+            <div>
+              <label className="mb-1.5 block font-label text-xs font-semibold uppercase tracking-wide text-muted">Title (Hindi)</label>
+              <input
+                name="titleHi"
+                defaultValue={entry.titleHi}
+                maxLength={100}
+                className="w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 font-body text-sm text-ink outline-none focus:border-accent"
+              />
+            </div>
+            <div className="mt-3">
+              <label className="mb-1.5 block font-label text-xs font-semibold uppercase tracking-wide text-muted">Body (Hindi)</label>
+              <textarea
+                name="bodyHi"
+                rows={3}
+                defaultValue={entry.bodyHi}
+                maxLength={500}
+                className="w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 font-body text-sm text-ink outline-none focus:border-accent"
+              />
+            </div>
+          </div>
           {state?.error ? <p className="font-body text-sm text-danger">{state.error}</p> : null}
           {state?.success ? <p className="font-body text-sm text-success">Saved — every future send of this notification uses this text.</p> : null}
           <SubmitButton>Save template</SubmitButton>
