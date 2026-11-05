@@ -4,10 +4,10 @@ import { getSession } from "./session";
 const DEFAULT_LOCAL_API = "http://localhost:7003/trickle";
 
 function resolveApiBaseUrl() {
-  const fromEnv = process.env.API_BASE_URL?.trim().replace(/\/$/, "");
+  const fromEnv = process.env.NEXT_PUBLIC_API_BASE_URL?.trim().replace(/\/$/, "");
   if (fromEnv) return fromEnv;
   if (process.env.NODE_ENV === "production") {
-    throw new Error("API_BASE_URL is required in production.");
+    throw new Error("NEXT_PUBLIC_API_BASE_URL is required in production.");
   }
   return DEFAULT_LOCAL_API;
 }
@@ -57,7 +57,7 @@ async function apiFetch(path: string, init: RequestInit): Promise<Response> {
     return await fetch(`${API_BASE_URL}${path}`, init);
   } catch {
     throw new ApiError(
-      `Cannot reach Trickle API at ${API_BASE_URL}. Set API_BASE_URL on the host and redeploy.`,
+      `Cannot reach Trickle API at ${API_BASE_URL}. Set NEXT_PUBLIC_API_BASE_URL and redeploy.`,
       502,
     );
   }
