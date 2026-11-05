@@ -85,3 +85,9 @@ h1, h2, h3 {
   background: var(--color-accent-surface);
   color: var(--color-accent-ink);
 }
+
+/* Netlify injects its badge on hosted deploys. */
+#netlify-badge,
+.netlify-badge {
+  display: none !important;
+}
