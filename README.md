@@ -16,7 +16,7 @@ Next.js 16 (App Router) + TypeScript + Tailwind 4, themed to match the Trickle m
 
    ```bash
    cp .env.example .env.local
-   # edit .env.local — API_BASE_URL should point at your running transitorder backend
+   # edit .env.local — NEXT_PUBLIC_API_BASE_URL should point at your running transitorder backend
    ```
 
 3. **Install and run**:
