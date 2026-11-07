@@ -162,10 +162,12 @@ export type EffectiveConfig = {
     multiDayTripCreationEnabled: boolean;
     nearbyVisibilityEnabled: boolean;
     boardingPassScanEnabled: boolean;
-    hindiLanguageEnabled: boolean;
+    multiLanguageEnabled: boolean;
     tripWaypointsEnabled: boolean;
     supportBotEnabled: boolean;
     walkingModeEnabled: boolean;
+    forceUpdateEnabled: boolean;
+    updatePromptEnabled: boolean;
   };
   parcelSafety: {
     maxDeclaredValue: number;
@@ -229,6 +231,25 @@ export type Announcement = {
   active: boolean;
   startAt: string;
   endAt?: string;
+  createdByAdminId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Knowledge base — FAQ / resolved-conversation entries the RAG support bot
+// retrieves from (see transitorder's /v1/admin/knowledge-base). The backend
+// never serializes the embedding vector, so there's no field for it here.
+export type KnowledgeBaseSourceType = "faq" | "resolved_thread";
+
+export type KnowledgeBaseEntry = {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+  keywords?: string[];
+  sourceType: KnowledgeBaseSourceType;
+  sourceThreadId?: string;
+  active: boolean;
   createdByAdminId?: string;
   createdAt: string;
   updatedAt: string;
