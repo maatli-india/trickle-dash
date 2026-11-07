@@ -12,10 +12,12 @@ export function FeatureFlagsForm({
   multiDayTripCreationEnabled,
   nearbyVisibilityEnabled,
   boardingPassScanEnabled,
-  hindiLanguageEnabled,
+  multiLanguageEnabled,
   tripWaypointsEnabled,
   supportBotEnabled,
   walkingModeEnabled,
+  forceUpdateEnabled,
+  updatePromptEnabled,
 }: {
   userKYCAadhaar: boolean;
   userPhotoVerification: boolean;
@@ -24,10 +26,12 @@ export function FeatureFlagsForm({
   multiDayTripCreationEnabled: boolean;
   nearbyVisibilityEnabled: boolean;
   boardingPassScanEnabled: boolean;
-  hindiLanguageEnabled: boolean;
+  multiLanguageEnabled: boolean;
   tripWaypointsEnabled: boolean;
   supportBotEnabled: boolean;
   walkingModeEnabled: boolean;
+  forceUpdateEnabled: boolean;
+  updatePromptEnabled: boolean;
 }) {
   const [state, formAction] = useActionState(updateFeatureFlagsAction, undefined);
 
@@ -90,9 +94,9 @@ export function FeatureFlagsForm({
       </label>
       <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
         <span>
-          <span className="block font-body text-sm font-medium text-ink">Multi-day (weekday) trip creation</span>
+          <span className="block font-body text-sm font-medium text-ink">Multi-day trip creation</span>
           <span className="mt-1 block font-body text-xs text-muted">
-            Lets a traveler post the same trip across several weekdays in one go. Off by default — staged rollout, not yet in the
+            Lets a traveler post the same trip across several picked dates in one go. Off by default — staged rollout, not yet in the
             submitted app store build&apos;s active UI.
           </span>
         </span>
@@ -136,17 +140,21 @@ export function FeatureFlagsForm({
       </label>
       <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
         <span>
-          <span className="block font-body text-sm font-medium text-ink">Hindi language</span>
+          <span className="block font-body text-sm font-medium text-ink">Multi-language</span>
           <span className="mt-1 block font-body text-xs text-muted">
-            Shows the language picker in the app&apos;s Account settings (English/Hindi) for the translated screens, and lets the backend
-            send Hindi push notifications and OTP emails to users who pick it. OTP SMS stays English regardless — the SMS provider only
-            sends pre-approved, DLT-registered templates, a separate operational step. Off by default.
+            Single switch for every non-English language (Hindi, Marathi, Tamil): off means the app is English only, full stop, even
+            overriding a user&apos;s own previously-saved language choice; on means all three are offered in the Account settings
+            language picker, device-locale auto-detection applies to all of them, and the backend sends matching push notifications
+            and OTP emails. OTP SMS stays English regardless — the SMS provider only sends pre-approved, DLT-registered templates, a
+            separate operational step. Marathi and Tamil&apos;s translated strings are a machine-generated first pass with no
+            native-speaker review yet — worth a spot-check (especially safety/payment/legal copy) before turning this on for real
+            users. Off by default.
           </span>
         </span>
         <input
           type="checkbox"
-          name="hindiLanguageEnabled"
-          defaultChecked={hindiLanguageEnabled}
+          name="multiLanguageEnabled"
+          defaultChecked={multiLanguageEnabled}
           className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
         />
       </label>
@@ -197,6 +205,34 @@ export function FeatureFlagsForm({
           type="checkbox"
           name="walkingModeEnabled"
           defaultChecked={walkingModeEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Force update (blocking)</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Blocks the app with an &quot;update required&quot; screen when the installed version is below the minimum supported version, or when &quot;Force update for everyone right now&quot; is on under App version. Off means nobody is ever blocked — an app below the minimum gets the optional prompt instead, if that&apos;s on. Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="forceUpdateEnabled"
+          defaultChecked={forceUpdateEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Update prompt (optional)</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Shows a dismissible &quot;new version available&quot; prompt when the installed version is older than the latest version set under App version. Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="updatePromptEnabled"
+          defaultChecked={updatePromptEnabled}
           className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
         />
       </label>

@@ -17,7 +17,8 @@ export function AppVersionForm({ appVersion }: { appVersion: AppVersionConfig })
         Live on both iOS and Android — the app calls <code className="rounded bg-surface px-1">GET /v1/app/version-check</code> at
         startup. A saved change here reaches the app within the 30s config cache window: <strong>Force update</strong> blocks the
         entire app (no navigation, nothing dismissible) until the user updates; otherwise, if the app&apos;s version is below
-        Latest version, it shows a dismissible &quot;Update available&quot; prompt instead.
+        Latest version, it shows a dismissible &quot;Update available&quot; prompt instead. Both only apply while their feature
+        flags (<strong>Force update</strong> and <strong>Update prompt</strong>, under Feature flags) are on.
       </p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
