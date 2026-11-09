@@ -18,6 +18,7 @@ import {
   UserX,
   MessageCircle,
   Send,
+  BookOpen,
   X,
 } from "lucide-react";
 
@@ -34,6 +35,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/config", label: "Configuration", icon: SlidersHorizontal },
   { href: "/dashboard/content", label: "Content", icon: FileText },
   { href: "/dashboard/announcements", label: "Announcements", icon: Megaphone },
+  { href: "/dashboard/knowledge-base", label: "Knowledge base", icon: BookOpen },
   { href: "/dashboard/notifications", label: "Notifications", icon: BellRing },
   { href: "/dashboard/campaigns", label: "Campaigns", icon: Send },
 ];
