@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const COOKIE_NAME = process.env.SESSION_COOKIE_NAME || "trickle_dash_session";
+// SupportChatPanel opens its WebSocket straight to the API host, which 'self' alone blocks.
+const API_SOCKET_ORIGIN = socketOrigin(process.env.NEXT_PUBLIC_API_BASE_URL);
+
+function socketOrigin(base: string | undefined): string {
+  try {
+    return base ? new URL(base.trim()).origin.replace(/^http/, "ws") : "";
+  } catch {
+    return "";
+  }
+}
 
 function isSessionValid(raw: string | undefined): boolean {
   if (!raw) return false;
@@ -23,10 +33,10 @@ function buildCSP(): { nonce: string; csp: string } {
   const csp = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
-    style-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     img-src 'self' data: https:;
-    font-src 'self' data:;
-    connect-src 'self';
+    font-src 'self' data: https://fonts.gstatic.com;
+    connect-src 'self' ${API_SOCKET_ORIGIN};
     object-src 'none';
     base-uri 'self';
     form-action 'self';

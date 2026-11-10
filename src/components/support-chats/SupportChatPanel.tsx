@@ -9,7 +9,8 @@ import { formatDateTime } from "@/lib/format";
 // NEXT_PUBLIC_ so it's inlined into the client bundle — the websocket is
 // opened directly from the browser, unlike every other backend call in this
 // repo which goes through the server-only apiGet/apiPost client in api.ts.
-const WS_BASE_URL = process.env.NEXT_PUBLIC_WS_BASE_URL || "";
+// Same host as the API: http→ws, https→wss.
+const WS_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "").trim().replace(/\/$/, "").replace(/^http/, "ws");
 
 const STATUS_TONE = { open: "danger", resolved: "success", closed: "neutral" } as const;
 
