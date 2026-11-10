@@ -18,6 +18,7 @@ export async function updateFeatureFlagsAction(_prev: ActionState, formData: For
       boardingPassScanEnabled: formData.get("boardingPassScanEnabled") === "on",
       multiLanguageEnabled: formData.get("multiLanguageEnabled") === "on",
       tripWaypointsEnabled: formData.get("tripWaypointsEnabled") === "on",
+      handoffProofEnabled: formData.get("handoffProofEnabled") === "on",
       supportBotEnabled: formData.get("supportBotEnabled") === "on",
       walkingModeEnabled: formData.get("walkingModeEnabled") === "on",
       forceUpdateEnabled: formData.get("forceUpdateEnabled") === "on",

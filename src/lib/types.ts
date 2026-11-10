@@ -164,6 +164,7 @@ export type EffectiveConfig = {
     boardingPassScanEnabled: boolean;
     multiLanguageEnabled: boolean;
     tripWaypointsEnabled: boolean;
+    handoffProofEnabled?: boolean;
     supportBotEnabled: boolean;
     walkingModeEnabled: boolean;
     forceUpdateEnabled: boolean;

@@ -14,6 +14,7 @@ export function FeatureFlagsForm({
   boardingPassScanEnabled,
   multiLanguageEnabled,
   tripWaypointsEnabled,
+  handoffProofEnabled,
   supportBotEnabled,
   walkingModeEnabled,
   forceUpdateEnabled,
@@ -28,6 +29,7 @@ export function FeatureFlagsForm({
   boardingPassScanEnabled: boolean;
   multiLanguageEnabled: boolean;
   tripWaypointsEnabled: boolean;
+  handoffProofEnabled: boolean;
   supportBotEnabled: boolean;
   walkingModeEnabled: boolean;
   forceUpdateEnabled: boolean;
@@ -171,6 +173,23 @@ export function FeatureFlagsForm({
           type="checkbox"
           name="tripWaypointsEnabled"
           defaultChecked={tripWaypointsEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Pickup &amp; delivery proof</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Lets a traveler opt in, per trip, to recording a photo or short video of each parcel at pickup and at delivery (camera
+            only). Senders see the commitment on the Send request screen; the proof shows on the request for the sender, receiver
+            and traveler. Turning this off hides the option and stops new proof uploads — proof already recorded stays viewable.
+            Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="handoffProofEnabled"
+          defaultChecked={handoffProofEnabled}
           className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
         />
       </label>

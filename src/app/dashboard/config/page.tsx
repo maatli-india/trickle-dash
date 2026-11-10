@@ -101,6 +101,7 @@ export default async function ConfigPage() {
             boardingPassScanEnabled={config.featureFlags.boardingPassScanEnabled}
             multiLanguageEnabled={config.featureFlags.multiLanguageEnabled}
             tripWaypointsEnabled={config.featureFlags.tripWaypointsEnabled}
+            handoffProofEnabled={config.featureFlags.handoffProofEnabled ?? false}
             supportBotEnabled={config.featureFlags.supportBotEnabled}
             walkingModeEnabled={config.featureFlags.walkingModeEnabled}
             forceUpdateEnabled={config.featureFlags.forceUpdateEnabled}
