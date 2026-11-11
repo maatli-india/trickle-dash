@@ -168,6 +168,8 @@ export type EffectiveConfig = {
     walkingModeEnabled: boolean;
     forceUpdateEnabled: boolean;
     updatePromptEnabled: boolean;
+    ratingPromptEnabled: boolean;
+    handoffProofEnabled: boolean;
   };
   parcelSafety: {
     maxDeclaredValue: number;

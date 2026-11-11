@@ -105,6 +105,8 @@ export default async function ConfigPage() {
             walkingModeEnabled={config.featureFlags.walkingModeEnabled}
             forceUpdateEnabled={config.featureFlags.forceUpdateEnabled}
             updatePromptEnabled={config.featureFlags.updatePromptEnabled}
+            ratingPromptEnabled={config.featureFlags.ratingPromptEnabled}
+            handoffProofEnabled={config.featureFlags.handoffProofEnabled}
           />
         </Section>
       </Category>
