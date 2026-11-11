@@ -45,23 +45,13 @@ until the certificate is issued.
 
 | Type | Key | Required | Example (dev) |
 |---|---|---|---|
+| Variable | `NEXT_PUBLIC_API_BASE_URL` | yes | `https://api-dev.trickle.org.in/trickle` — no `/v1`, no trailing `/` |
 | Variable | `PUBLIC_HOST` | deploy | `dashboard-dev.trickle.org.in` — Traefik `Host` rule, no `https://` |
 | Variable | `CF_DISTRIBUTION_ID` | no | CloudFront distribution in front of this env, e.g. `E1ABCDEF2GHIJK` — invalidates `/*` after each deploy; empty = warning, no invalidation |
 | Secret | `EC2_INSTANCE_ID` | deploy | `i-0abc…` — dev and qa: the dev/qa instance; prod: the prod instance |
 
-## Repo variables — API host per env (required)
-
-The build runs in `release`, which has no GitHub Environment (same as the API workflow), and Environment variables
-reach only jobs that reference that environment. So the API host is a repo variable per env:
-
-| Key | Value |
-|---|---|
-| `NEXT_PUBLIC_API_BASE_URL_DEV` | `https://api-dev.trickle.org.in/trickle` — no `/v1`, no trailing `/` |
-| `NEXT_PUBLIC_API_BASE_URL_QA` | `https://api-qa.trickle.org.in/trickle` |
-| `NEXT_PUBLIC_API_BASE_URL_PROD` | `https://api.trickle.org.in/trickle` |
-
-Baked in at build time; the support-chat WebSocket uses the same host (`https` → `wss`). A missing key for a ticked
-env fails the run before anything is built. The Environment `NEXT_PUBLIC_API_BASE_URL` stays for the Netlify workflow.
+`NEXT_PUBLIC_API_BASE_URL` is the same key as trickle-web. It is baked in at build time; the support-chat WebSocket
+uses the same host (`https` → `wss`). Missing required keys fail the run before anything is built.
 
 ## Secrets (repo level, or per env to override)
 
@@ -91,11 +81,11 @@ env fails the run before anything is built. The Environment `NEXT_PUBLIC_API_BAS
 Detection rule: `<env>-YYYYMMDD_hhmm.N` = image tag, any other 7–40 hex = git SHA, anything else fails.
 Use the full 40-char SHA to avoid ambiguity. An image tag needs `action=deploy` and exactly its own env ticked.
 
-Only the ticked envs run. Allowed: `dev`, `qa`, `dev+qa` (dev first; qa is skipped if dev fails), `prod`.
-**PROD always runs alone** and only with `action=deploy`: it builds for prod and deploys (or redeploys a `prod-…` tag).
+**One env per run** (`dev`, `qa` or `prod`): `release` takes that GitHub Environment to read its
+`NEXT_PUBLIC_API_BASE_URL`, and a job can reference only one environment. PROD only with `action=deploy`.
 
-Jobs (same as the API workflow): `release` (validate, build + push one image per ticked env; no build for an image
-tag) → `deploy-dev` / `deploy-qa` / `deploy-prod` (deploy only). **Re-run failed jobs** on a failed deploy redeploys
+Jobs (same as the API workflow): `release` (validate, build + push the image; no build for an image tag) →
+`deploy-dev` / `deploy-qa` / `deploy-prod` (deploy only). **Re-run failed jobs** on a failed deploy redeploys
 the same image — it does not rebuild.
 
 Each deploy is health-checked inside the container (`GET http://127.0.0.1:3000/login` must succeed; 5 s + 10 × 2 s).

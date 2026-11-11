@@ -27,7 +27,7 @@ on:
         type: boolean
         default: false
       prod:
-        description: "PROD (alone, deploy only)"
+        description: "PROD (deploy only)"
         type: boolean
         default: false
       build_tag:
@@ -61,6 +61,11 @@ jobs:
   release:
     name: Validate, metadata & build
     runs-on: ubuntu-latest
+    # Environment variables reach only a job that references that environment (one per job), so release takes the
+    # ticked env to read its NEXT_PUBLIC_API_BASE_URL. deployment: false = no deployment record. One env per run.
+    environment:
+      name: ${{ inputs.prod && 'prod' || inputs.qa && 'qa' || 'dev' }}
+      deployment: false
     outputs:
       branch: ${{ steps.meta.outputs.branch }}
       envs: ${{ steps.validate.outputs.envs }}
@@ -90,9 +95,9 @@ jobs:
             echo "::error:: No environment selected for ${ACTION}"
             exit 1
           fi
-          # PROD always builds and deploys in its own run: never build-only, never batched with dev/qa.
-          if [ "$PROD" = true ] && [ "${#ENVS[@]}" -gt 1 ]; then
-            echo "::error:: PROD deploys alone — untick dev/qa"
+          # release reads one Environment's NEXT_PUBLIC_API_BASE_URL, so one env per run.
+          if [ "${#ENVS[@]}" -gt 1 ]; then
+            echo "::error:: One env per run — tick only one of dev / qa"
             exit 1
           fi
           if [ "$PROD" = true ] && [ "$ACTION" = build ]; then
@@ -253,47 +258,33 @@ jobs:
         if: steps.validate.outputs.mode != 'image'
         uses: docker/setup-buildx-action@v4
 
-      # This job has no GitHub Environment (Environment variables reach only jobs that reference one),
-      # so each env's API host comes from the repo variable NEXT_PUBLIC_API_BASE_URL_<ENV>.
-      - name: Build and push images (linux/arm64)
+      - name: Build and push image (linux/arm64)
         if: steps.validate.outputs.mode != 'image'
         env:
           BRANCH: ${{ steps.meta.outputs.branch }}
-          ENVS: ${{ steps.validate.outputs.envs }}
+          ENV_NAME: ${{ fromJSON(steps.validate.outputs.envs)[0] }}
           MESSAGE: ${{ steps.meta.outputs.message }}
+          NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
           SHA: ${{ steps.meta.outputs.sha }}
           SUFFIX: ${{ steps.suffix.outputs.suffix }}
-          URL_DEV: ${{ vars.NEXT_PUBLIC_API_BASE_URL_DEV }}
-          URL_PROD: ${{ vars.NEXT_PUBLIC_API_BASE_URL_PROD }}
-          URL_QA: ${{ vars.NEXT_PUBLIC_API_BASE_URL_QA }}
         run: |
           set -euo pipefail
-          mapfile -t TARGETS < <(echo "$ENVS" | jq -r '.[]')
-          for E in "${TARGETS[@]}"; do
-            V="URL_${E^^}"
-            if [ -z "${!V}" ]; then
-              echo "::error:: Repo variable NEXT_PUBLIC_API_BASE_URL_${E^^} is not set"
-              exit 1
-            fi
-          done
-          for E in "${TARGETS[@]}"; do
-            V="URL_${E^^}"
-            IMAGE_TAG="${E}-${SUFFIX}"
-            echo "--- ${E}: next build (API ${!V}) ---"
-            # Drop the previous env's output so it can't end up in this env's image.
-            rm -rf .next/standalone .next/static
-            NEXT_PUBLIC_API_BASE_URL="${!V}" npm run build
-            if [ ! -f .next/standalone/server.js ]; then
-              echo '::error:: .next/standalone/server.js missing — next.config.ts needs output: "standalone"'
-              exit 1
-            fi
-            docker buildx build --platform linux/arm64 --push -f Dockerfile \
-              --label "deploy.branch=${BRANCH}" \
-              --label "deploy.sha=${SHA}" \
-              --label "deploy.message=${MESSAGE}" \
-              -t "${DOCKER_IMAGE}:${IMAGE_TAG}" .
-            echo "- Image: \`${IMAGE_TAG}\` (${E})" >> "$GITHUB_STEP_SUMMARY"
-          done
+          if [ -z "$NEXT_PUBLIC_API_BASE_URL" ]; then
+            echo "::error:: GitHub Environment '${ENV_NAME}' is missing: NEXT_PUBLIC_API_BASE_URL"
+            exit 1
+          fi
+          IMAGE_TAG="${ENV_NAME}-${SUFFIX}"
+          npm run build
+          if [ ! -f .next/standalone/server.js ]; then
+            echo '::error:: .next/standalone/server.js missing — next.config.ts needs output: "standalone"'
+            exit 1
+          fi
+          docker buildx build --platform linux/arm64 --push -f Dockerfile \
+            --label "deploy.branch=${BRANCH}" \
+            --label "deploy.sha=${SHA}" \
+            --label "deploy.message=${MESSAGE}" \
+            -t "${DOCKER_IMAGE}:${IMAGE_TAG}" .
+          echo "- Image: \`${IMAGE_TAG}\` (${ENV_NAME})" >> "$GITHUB_STEP_SUMMARY"
 
   deploy-dev:
     name: Deploy → DEV
