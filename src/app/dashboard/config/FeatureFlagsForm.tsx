@@ -14,11 +14,12 @@ export function FeatureFlagsForm({
   boardingPassScanEnabled,
   multiLanguageEnabled,
   tripWaypointsEnabled,
-  handoffProofEnabled,
   supportBotEnabled,
   walkingModeEnabled,
   forceUpdateEnabled,
   updatePromptEnabled,
+  ratingPromptEnabled,
+  handoffProofEnabled,
 }: {
   userKYCAadhaar: boolean;
   userPhotoVerification: boolean;
@@ -29,11 +30,12 @@ export function FeatureFlagsForm({
   boardingPassScanEnabled: boolean;
   multiLanguageEnabled: boolean;
   tripWaypointsEnabled: boolean;
-  handoffProofEnabled: boolean;
   supportBotEnabled: boolean;
   walkingModeEnabled: boolean;
   forceUpdateEnabled: boolean;
   updatePromptEnabled: boolean;
+  ratingPromptEnabled: boolean;
+  handoffProofEnabled: boolean;
 }) {
   const [state, formAction] = useActionState(updateFeatureFlagsAction, undefined);
 
@@ -178,23 +180,6 @@ export function FeatureFlagsForm({
       </label>
       <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
         <span>
-          <span className="block font-body text-sm font-medium text-ink">Pickup &amp; delivery proof</span>
-          <span className="mt-1 block font-body text-xs text-muted">
-            Lets a traveler opt in, per trip, to recording a photo or short video of each parcel at pickup and at delivery (camera
-            only). Senders see the commitment on the Send request screen; the proof shows on the request for the sender, receiver
-            and traveler. Turning this off hides the option and stops new proof uploads — proof already recorded stays viewable.
-            Off by default.
-          </span>
-        </span>
-        <input
-          type="checkbox"
-          name="handoffProofEnabled"
-          defaultChecked={handoffProofEnabled}
-          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
-        />
-      </label>
-      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
-        <span>
           <span className="block font-body text-sm font-medium text-ink">Support bot (L1 FAQ)</span>
           <span className="mt-1 block font-body text-xs text-muted">
             Answers a user&apos;s first message in a support chat from a fixed set of FAQ topics (pricing, cancellation, safety,
@@ -252,6 +237,34 @@ export function FeatureFlagsForm({
           type="checkbox"
           name="updatePromptEnabled"
           defaultChecked={updatePromptEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">App rating prompt</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            After a user gives a 4–5 star rating on a completed delivery (from their 2nd one on, at most once every 90 days), shows the App Store / Play Store&apos;s own &quot;Rate Trickle&quot; popup. The store may still decide not to show it. The &quot;Rate Trickle&quot; link in Account works either way. Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="ratingPromptEnabled"
+          defaultChecked={ratingPromptEnabled}
+          className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
+        />
+      </label>
+      <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
+        <span>
+          <span className="block font-body text-sm font-medium text-ink">Handover proof (pickup &amp; delivery)</span>
+          <span className="mt-1 block font-body text-xs text-muted">
+            Lets travelers turn on &quot;Record handover proof&quot; when creating or editing a trip. Senders then see that the traveler records proof, and the traveler is asked for photos/video at pickup and delivery. Turning it off hides the option and stops new proof being recorded; proof already recorded stays viewable. Requests keep the setting they were created with. Off by default.
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          name="handoffProofEnabled"
+          defaultChecked={handoffProofEnabled}
           className="mt-1 h-5 w-5 accent-[var(--color-accent)]"
         />
       </label>
