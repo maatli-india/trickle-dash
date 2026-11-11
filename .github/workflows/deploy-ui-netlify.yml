@@ -211,8 +211,18 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: ${{ env.MODE != 'restore' && 'npm' || '' }}
 
-      - name: Install dependencies
+      # Caches node_modules itself: with only the npm download cache, `npm ci` still took ~40-50s
+      # unpacking. A lockfile or Node major change misses and reinstalls.
+      - name: Restore node_modules
         if: env.MODE != 'restore'
+        id: modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: modules-${{ runner.os }}-${{ runner.arch }}-node${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: env.MODE != 'restore' && steps.modules.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Build only (no Netlify)
