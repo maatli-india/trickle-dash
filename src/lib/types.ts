@@ -169,7 +169,6 @@ export type EffectiveConfig = {
     forceUpdateEnabled: boolean;
     updatePromptEnabled: boolean;
     ratingPromptEnabled: boolean;
-    handoffProofEnabled: boolean;
   };
   parcelSafety: {
     maxDeclaredValue: number;
