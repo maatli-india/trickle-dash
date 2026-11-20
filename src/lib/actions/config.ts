@@ -23,7 +23,6 @@ export async function updateFeatureFlagsAction(_prev: ActionState, formData: For
       forceUpdateEnabled: formData.get("forceUpdateEnabled") === "on",
       updatePromptEnabled: formData.get("updatePromptEnabled") === "on",
       ratingPromptEnabled: formData.get("ratingPromptEnabled") === "on",
-      handoffProofEnabled: formData.get("handoffProofEnabled") === "on",
     });
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Could not update feature flags." };

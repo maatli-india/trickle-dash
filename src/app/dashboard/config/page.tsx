@@ -106,7 +106,6 @@ export default async function ConfigPage() {
             forceUpdateEnabled={config.featureFlags.forceUpdateEnabled}
             updatePromptEnabled={config.featureFlags.updatePromptEnabled}
             ratingPromptEnabled={config.featureFlags.ratingPromptEnabled}
-            handoffProofEnabled={config.featureFlags.handoffProofEnabled}
           />
         </Section>
       </Category>
