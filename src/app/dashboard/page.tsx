@@ -1,11 +1,14 @@
 import { Users, Package, Plane, ShieldAlert, UserPlus, CheckCircle2, Wallet, RotateCcw, Search } from "lucide-react";
 import { apiGet } from "@/lib/api";
-import type { OverviewStats, GoogleSearchStats } from "@/lib/types";
+import type { OverviewStats, GoogleSearchStats, AppUsage } from "@/lib/types";
 import { StatCard } from "@/components/StatCard";
 import { TrendCard } from "@/components/TrendCard";
 import { TopCitiesCard } from "@/components/TopCitiesCard";
 import { GoogleSearchTopSearchersCard } from "@/components/GoogleSearchTopSearchersCard";
 import { GoogleSearchTopLocationsCard } from "@/components/GoogleSearchTopLocationsCard";
+import { ParcelFunnelCard } from "@/components/ParcelFunnelCard";
+import { RevenueCard } from "@/components/RevenueCard";
+import { AppUsageSection } from "@/components/AppUsageSection";
 
 export const metadata = { title: "Overview — Trickle Dash" };
 
@@ -14,9 +17,12 @@ function formatINR(amountMinor: number): string {
 }
 
 export default async function OverviewPage() {
-  const [stats, googleSearchStats] = await Promise.all([
+  const [stats, googleSearchStats, appUsage] = await Promise.all([
     apiGet<OverviewStats>("/v1/admin/overview"),
     apiGet<GoogleSearchStats>("/v1/admin/google-search-stats"),
+    // Analytics is optional: if this call fails (older backend, network),
+    // the section shows "unavailable" instead of breaking the page.
+    apiGet<AppUsage>("/v1/admin/app-usage").catch(() => null),
   ]);
 
   return (
@@ -49,6 +55,17 @@ export default async function OverviewPage() {
           <TrendCard label="Refunds" icon={RotateCcw} metric={stats.refundsMinor} format={formatINR} />
         </div>
       </div>
+
+      <div>
+        <h2 className="font-display text-lg font-semibold text-ink">Business</h2>
+        <p className="mt-1 font-body text-sm text-muted">Where parcel requests stall, and the money from completed deliveries.</p>
+        <div className="mt-3 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <ParcelFunnelCard funnel={stats.funnel30d} />
+          <RevenueCard title="Revenue · this month" summary={stats.revenueThisMonth} compare={stats.revenueLastMonth} />
+        </div>
+      </div>
+
+      <AppUsageSection usage={appUsage} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <TopCitiesCard title="Top pickup areas" cities={stats.topOriginCities} />
