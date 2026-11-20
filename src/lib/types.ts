@@ -347,6 +347,45 @@ export type OverviewStats = {
   refundsMinor: TrendMetric;
   topOriginCities: CityCount[];
   topDestinationCities: CityCount[];
+  // Optional: older backends don't send these yet.
+  funnel30d?: ParcelFunnel;
+  revenueThisMonth?: RevenueSummary;
+  revenueLastMonth?: RevenueSummary;
+};
+
+export type ParcelFunnel = {
+  requested: number;
+  accepted: number;
+  confirmed: number;
+  delivered: number;
+  cancelled: number;
+  open: number;
+};
+
+export type RevenueSummary = {
+  deliveries: number;
+  grossMinor: number;
+  commissionMinor: number;
+  travelerPayoutsMinor: number;
+  gstMinor: number;
+  avgOrderMinor: number;
+};
+
+// GET /v1/admin/app-usage — Google Analytics 4 (Firebase Analytics) data
+// for the app. Always 200: configured=false when no GA4 property is set,
+// error set when Google rejected the request.
+export type AppUsage = {
+  configured: boolean;
+  filter: string; // backend user-property value reports are limited to; "" = all builds
+  error?: string;
+  generatedAt?: string;
+  activeUsers: { last1Day: number; last7Days: number; last30Days: number };
+  last30Days: { newUsers: number; sessions: number; avgEngagementSeconds: number };
+  dailyActiveUsers: { date: string; activeUsers: number }[];
+  topScreens: { screen: string; views: number }[];
+  funnelEvents: { event: string; count: number }[];
+  platforms: { name: string; activeUsers: number }[];
+  appVersions: { name: string; activeUsers: number }[];
 };
 
 export type GoogleSearchActorCount = { userId?: string; deviceId?: string; count: number };
