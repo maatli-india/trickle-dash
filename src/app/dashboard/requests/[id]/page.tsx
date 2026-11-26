@@ -6,6 +6,7 @@ import { Badge } from "@/components/Badge";
 import { ImageThumb } from "@/components/ImageThumb";
 import { formatDateTime } from "@/lib/format";
 import { DisputeResolutionForm } from "./DisputeResolutionForm";
+import { AdminRefundForm } from "./AdminRefundForm";
 
 const DISPUTE_RESOLUTION_POLICY = "admin_dispute_resolution";
 
@@ -27,6 +28,13 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
   const declaration = match.safetyDeclaration;
   const resolution =
     match.cancellation?.policy === DISPUTE_RESOLUTION_POLICY ? match.cancellation : null;
+  const adminRefund = match.cancellation?.adminRefundByUserId ? match.cancellation : null;
+  // Same gate the backend's AdminRefund enforces: a captured payment, no
+  // refund yet, and not an open dispute (that has its own refund form).
+  const canRefund =
+    match.paymentRef?.status === "escrowed" &&
+    !(match.disputed && !resolution) &&
+    !(match.cancellation && (match.cancellation.refundStatus || match.cancellation.refundAmount > 0));
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -62,6 +70,39 @@ export default async function RequestDetailPage({ params }: { params: Promise<{ 
           {resolution.reason ? <p className="mt-1 text-muted">Reason: {resolution.reason}</p> : null}
           <p className="mt-1 text-xs text-muted">Resolved by {resolution.cancelledByUserId} on {formatDateTime(resolution.createdAt)}</p>
         </div>
+      ) : null}
+
+      {adminRefund ? (
+        <div className="rounded-xl border border-border bg-surface-muted px-4 py-3 font-body text-sm text-ink">
+          <p className="font-semibold">Admin refund</p>
+          <p className="mt-1 text-muted">
+            ₹{adminRefund.refundAmount.toFixed(2)} to the sender · platform kept ₹{adminRefund.feeAmount.toFixed(2)}
+            {adminRefund.refundStatus ? ` · refund ${adminRefund.refundStatus.replace(/_/g, " ")}` : ""}
+          </p>
+          {adminRefund.refundFailureReason ? <p className="mt-1 text-danger">PayU: {adminRefund.refundFailureReason}</p> : null}
+          {adminRefund.adminRefundReason ? <p className="mt-1 text-muted">Reason: {adminRefund.adminRefundReason}</p> : null}
+          <p className="mt-1 text-xs text-muted">
+            Issued by {adminRefund.adminRefundByUserId}
+            {adminRefund.adminRefundAt ? ` on ${formatDateTime(adminRefund.adminRefundAt)}` : ""}
+            {adminRefund.refundTransactionId ? (
+              <>
+                {" · "}
+                <Link href={`/dashboard/payments/${adminRefund.refundTransactionId}`} className="hover:underline">
+                  refund transaction
+                </Link>
+              </>
+            ) : null}
+          </p>
+        </div>
+      ) : null}
+
+      {canRefund ? (
+        <details className="rounded-xl border border-border bg-surface px-4 py-3">
+          <summary className="cursor-pointer font-body text-sm font-semibold text-ink">Issue refund</summary>
+          <div className="mt-3">
+            <AdminRefundForm match={match} />
+          </div>
+        </details>
       ) : null}
 
       <div className="rounded-2xl border border-border bg-surface p-6">

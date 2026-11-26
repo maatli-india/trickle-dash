@@ -54,6 +54,11 @@ export type CancellationOutcome = {
   reasonCode?: string;
   reason?: string;
   createdAt: string;
+  // Set only by an admin refund (POST /v1/admin/parcel-matches/{id}/refund).
+  adminRefundByUserId?: string;
+  adminRefundReason?: string;
+  adminRefundAt?: string;
+  refundCompletedAt?: string;
 };
 
 export type ParcelMatch = {
@@ -85,6 +90,9 @@ export type ParcelMatch = {
   disputed?: boolean;
   disputeReason?: string;
   cancellation?: CancellationOutcome;
+  // paymentRef.status "escrowed" = the sender's payment is captured and not
+  // refunded — the precondition for an admin refund.
+  paymentRef?: { status?: string; paymentMethod?: string; activeTransactionId?: string };
   // agreedPrice/pricing are admin-only fields the backend's
   // NewParcelMatchView only populates for an admin viewer — used here to
   // show the actual captured amount a refund is capped against.
