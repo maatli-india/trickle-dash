@@ -1,4 +1,4 @@
-import { Users, Package, Plane, ShieldAlert, UserPlus, CheckCircle2, Wallet, RotateCcw, Search } from "lucide-react";
+import { Users, Package, Plane, ShieldAlert, UserPlus, CheckCircle2, Wallet, RotateCcw, Search, Activity } from "lucide-react";
 import { apiGet } from "@/lib/api";
 import type { OverviewStats, GoogleSearchStats, AppUsage } from "@/lib/types";
 import { StatCard } from "@/components/StatCard";
@@ -43,6 +43,20 @@ export default async function OverviewPage() {
           tone={stats.reportsAwaitingReview > 0 ? "danger" : "neutral"}
         />
       </div>
+
+      {stats.activeUsers && (
+        <div>
+          <h2 className="font-display text-lg font-semibold text-ink">Active users</h2>
+          <p className="mt-1 font-body text-sm text-muted">
+            People who used the app in each period (from Trickle&apos;s own device records, so it works without Google Analytics).
+          </p>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <StatCard label="Last 24 hours" value={stats.activeUsers.last24Hours.toLocaleString("en-IN")} icon={Activity} tone="accent" />
+            <StatCard label="Last 7 days" value={stats.activeUsers.last7Days.toLocaleString("en-IN")} icon={Activity} />
+            <StatCard label="Last 30 days" value={stats.activeUsers.last30Days.toLocaleString("en-IN")} icon={Activity} />
+          </div>
+        </div>
+      )}
 
       <div>
         <h2 className="font-display text-lg font-semibold text-ink">This week</h2>
