@@ -4,6 +4,25 @@ import { revalidatePath } from "next/cache";
 import { apiPost } from "../api";
 import type { ActionState } from "./config";
 
+// Admin refund outside the dispute flow (backend: AdminRefund) — same PayU
+// refund path a cancellation uses. amount is in rupees, like refundAmount.
+export async function adminRefundAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const matchId = String(formData.get("matchId") || "");
+  const amount = Number(formData.get("amount") || 0);
+  const reason = String(formData.get("reason") || "").trim();
+  if (!matchId) return { error: "Missing request id." };
+  if (formData.get("confirm") !== "yes") return { error: "Tick the confirmation box to send the refund." };
+  if (reason.length < 3) return { error: "A reason (at least 3 characters) is required." };
+  if (!Number.isFinite(amount) || amount <= 0) return { error: "Refund amount must be more than zero." };
+  try {
+    await apiPost(`/v1/admin/parcel-matches/${encodeURIComponent(matchId)}/refund`, { amount, reason });
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Could not issue this refund." };
+  }
+  revalidatePath(`/dashboard/requests/${matchId}`);
+  return { success: true };
+}
+
 // The pickup-inspection decline, a reported no-show, and a mid-transit
 // exception all leave a sender's payment frozen in escrow with no
 // policy-computable "whose fault" answer — admin sets the refund amount

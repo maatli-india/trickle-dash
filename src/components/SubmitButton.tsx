@@ -6,10 +6,12 @@ export function SubmitButton({
   children,
   variant = "primary",
   className = "",
+  disabled = false,
 }: {
   children: React.ReactNode;
   variant?: "primary" | "danger" | "ghost";
   className?: string;
+  disabled?: boolean;
 }) {
   const { pending } = useFormStatus();
   const base = "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-body text-sm font-medium transition-colors disabled:opacity-60";
@@ -19,7 +21,7 @@ export function SubmitButton({
     ghost: "border border-border text-ink hover:bg-surface-muted",
   };
   return (
-    <button type="submit" disabled={pending} className={`${base} ${variants[variant]} ${className}`}>
+    <button type="submit" disabled={pending || disabled} className={`${base} ${variants[variant]} ${className}`}>
       {pending ? "Saving..." : children}
     </button>
   );
