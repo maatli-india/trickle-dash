@@ -343,8 +343,17 @@ export type TrendMetric = {
 
 export type CityCount = { city: string; count: number };
 
+export type ActiveUserCounts = {
+  last24Hours: number;
+  last7Days: number;
+  last30Days: number;
+};
+
 export type OverviewStats = {
   totalUsers: number;
+  // Distinct users who used the app in each window (backend device records;
+  // independent of Google Analytics). Optional: older backends don't send it.
+  activeUsers?: ActiveUserCounts;
   totalParcelRequests: number;
   totalTripsPosted: number;
   reportsAwaitingReview: number;
