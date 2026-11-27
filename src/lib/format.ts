@@ -7,17 +7,25 @@
 // both environments honor the same explicit locale identically.
 const LOCALE = "en-IN";
 
-export function formatDate(iso: string | undefined | null): string {
-  if (!iso) return "—";
+/**
+ * True for a real timestamp. The backend's "no value" time is
+ * 0001-01-01T00:00:00Z (Go's zero time), which must never render as a date.
+ */
+export function isRealDate(iso: string | undefined | null): iso is string {
+  if (!iso) return false;
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "—";
+  return !Number.isNaN(date.getTime()) && date.getUTCFullYear() > 1970;
+}
+
+export function formatDate(iso: string | undefined | null): string {
+  if (!isRealDate(iso)) return "—";
+  const date = new Date(iso);
   return date.toLocaleDateString(LOCALE, { day: "2-digit", month: "short", year: "numeric" });
 }
 
 export function formatDateTime(iso: string | undefined | null): string {
-  if (!iso) return "—";
+  if (!isRealDate(iso)) return "—";
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "—";
   return `${date.toLocaleDateString(LOCALE, { day: "2-digit", month: "short", year: "numeric" })}, ${date.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" })}`;
 }
 
@@ -35,9 +43,8 @@ const RELATIVE_UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
  * read as misleadingly fresh if someone leaves the tab open a while).
  */
 export function formatRelativeTime(iso: string | undefined | null): string {
-  if (!iso) return "—";
+  if (!isRealDate(iso)) return "—";
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "—";
   const diffMs = Date.now() - date.getTime();
   if (diffMs < 60 * 1000) return "just now";
   if (diffMs >= 24 * 60 * 60 * 1000) return formatDateTime(iso);
