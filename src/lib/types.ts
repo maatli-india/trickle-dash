@@ -495,8 +495,18 @@ export type Transaction = {
   failedAt?: string;
   paidAt?: string;
   refundedAt?: string;
+  paymentMethod?: string;
+  refundAttempts?: RefundAttempt[];
   createdAt: string;
   updatedAt: string;
+};
+
+// One PayU refund call on a refund row (oldest first).
+export type RefundAttempt = {
+  attemptNo: number;
+  attemptedAt: string;
+  status: string;
+  message?: string;
 };
 
 export type PayoutStatus = "due" | "exported" | "paid" | "failed";
