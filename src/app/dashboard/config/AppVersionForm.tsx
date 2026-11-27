@@ -16,20 +16,32 @@ export function AppVersionForm({ appVersion }: { appVersion: AppVersionConfig })
       <p className="rounded-lg border border-accent-border bg-accent-surface px-3 py-2 font-body text-xs text-warning">
         Live on both iOS and Android — the app calls <code className="rounded bg-surface px-1">GET /v1/app/version-check</code> at
         startup. A saved change here reaches the app within the 30s config cache window: <strong>Force update</strong> blocks the
-        entire app (no navigation, nothing dismissible) until the user updates; otherwise, if the app&apos;s version is below
-        Latest version, it shows a dismissible &quot;Update available&quot; prompt instead. Both only apply while their feature
+        entire app (no navigation, nothing dismissible) until the user updates; otherwise, if the app is below the latest
+        version (iOS) or build (Android), it shows a dismissible &quot;Update available&quot; prompt instead. iOS is checked by app
+        version, Android by build number (versionCode); Android builds that don&apos;t report a build number count as older than any
+        build set here. Both only apply while their feature
         flags (<strong>Force update</strong> and <strong>Update prompt</strong>, under Feature flags) are on.
       </p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="minSupportedVersion" className={LABEL}>Minimum supported version</label>
+          <label htmlFor="minSupportedVersion" className={LABEL}>iOS minimum supported version</label>
           <input id="minSupportedVersion" name="minSupportedVersion" placeholder="1.0.0" defaultValue={appVersion.minSupportedVersion} className={FIELD} />
           <p className="mt-1 font-body text-xs text-muted">Below this, the update is mandatory.</p>
         </div>
         <div>
-          <label htmlFor="latestVersion" className={LABEL}>Latest version</label>
+          <label htmlFor="latestVersion" className={LABEL}>iOS latest version</label>
           <input id="latestVersion" name="latestVersion" placeholder="1.2.0" defaultValue={appVersion.latestVersion} className={FIELD} />
           <p className="mt-1 font-body text-xs text-muted">Below this, an update is available but optional.</p>
+        </div>
+        <div>
+          <label htmlFor="androidMinBuild" className={LABEL}>Android minimum build</label>
+          <input id="androidMinBuild" name="androidMinBuild" type="number" min={0} step={1} placeholder="13" defaultValue={appVersion.androidMinBuild || ""} className={FIELD} />
+          <p className="mt-1 font-body text-xs text-muted">versionCode. Below this, the update is mandatory. Blank = off.</p>
+        </div>
+        <div>
+          <label htmlFor="androidLatestBuild" className={LABEL}>Android latest build</label>
+          <input id="androidLatestBuild" name="androidLatestBuild" type="number" min={0} step={1} placeholder="14" defaultValue={appVersion.androidLatestBuild || ""} className={FIELD} />
+          <p className="mt-1 font-body text-xs text-muted">versionCode. Below this, an update is available but optional. Blank = off.</p>
         </div>
       </div>
       <label className="flex items-start justify-between gap-4 rounded-xl border border-border p-4">
