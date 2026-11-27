@@ -149,6 +149,9 @@ export type ProhibitedCategory = { key: string; label: string };
 export type AppVersionConfig = {
   minSupportedVersion: string;
   latestVersion: string;
+  // Android gates on the build number (versionCode); 0 = not set.
+  androidMinBuild?: number;
+  androidLatestBuild?: number;
   forceUpdate: boolean;
   updateMessage: string;
   iosStoreUrl: string;

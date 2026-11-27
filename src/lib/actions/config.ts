@@ -111,11 +111,19 @@ export async function updatePricingPercentagesAction(_prev: ActionState, formDat
   return { success: true };
 }
 
+// Android versionCode from the form; blank or invalid means "not set" (0).
+function buildNumber(value: FormDataEntryValue | null): number {
+  const n = Number.parseInt(String(value || "").trim(), 10);
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
 export async function updateAppVersionAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   try {
     await apiPatch<EffectiveConfig>("/v1/admin/config/app-version", {
       minSupportedVersion: String(formData.get("minSupportedVersion") || "").trim(),
       latestVersion: String(formData.get("latestVersion") || "").trim(),
+      androidMinBuild: buildNumber(formData.get("androidMinBuild")),
+      androidLatestBuild: buildNumber(formData.get("androidLatestBuild")),
       forceUpdate: formData.get("forceUpdate") === "on",
       updateMessage: String(formData.get("updateMessage") || "").trim(),
       iosStoreUrl: String(formData.get("iosStoreUrl") || "").trim(),
